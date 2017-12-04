@@ -2,7 +2,7 @@
 
 namespace Yato.Input
 {
-    public enum KeyState : byte
+    public enum KeyState : int
     {
         None,
         Up,

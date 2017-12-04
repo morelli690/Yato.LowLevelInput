@@ -82,6 +82,12 @@ namespace Yato.Input
 
         public bool CaptureMouseMove;
 
+        public bool IsLeftMouseButtonPressed;
+        public bool IsRightMouseButtonPressed;
+        public bool IsMiddleMouseButtonPressed;
+        public bool IsXButton1Pressed;
+        public bool IsXButton2Pressed;
+
         public LowLevelMouseHook()
         {
             lockObject = new object();
@@ -178,6 +184,8 @@ namespace Yato.Input
         {
             if (nCode == 0) // wParam and lParam are set
             {
+                IsMiddleMouseButtonPressed = false; // reset
+
                 uint msg = (uint)wParam.ToInt32();
 
                 int x = Marshal.ReadInt32(lParam);
@@ -188,9 +196,11 @@ namespace Yato.Input
                 switch (msg)
                 {
                     case WM_LBUTTONDOWN:
+                        IsLeftMouseButtonPressed = true;
                         OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
                         break;
                     case WM_LBUTTONUP:
+                        IsLeftMouseButtonPressed = false;
                         OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
                         break;
                     case WM_MOUSEHWHEEL:
@@ -199,6 +209,7 @@ namespace Yato.Input
 
                         if(hiword == 120) // clicked the mouse wheel button
                         {
+                            IsMiddleMouseButtonPressed = true;
                             OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
                         }
                         else
@@ -218,6 +229,7 @@ namespace Yato.Input
 
                         if (hiword_2 == 120) // clicked the mouse wheel button
                         {
+                            IsMiddleMouseButtonPressed = true;
                             OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
                         }
                         else
@@ -228,25 +240,63 @@ namespace Yato.Input
                         }
                         break;
                     case WM_RBUTTONDOWN:
+                        IsRightMouseButtonPressed = true;
                         OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
                         break;
                     case WM_RBUTTONUP:
+                        IsRightMouseButtonPressed = false;
                         OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
                         break;
                     case WM_XBUTTONDOWN:
-                        OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
+                        if(mouseData == 0x1)
+                        {
+                            IsXButton1Pressed = true;
+                            OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
+                        }
+                        else
+                        {
+                            IsXButton2Pressed = true;
+                            OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
+                        }
                         break;
                     case WM_XBUTTONUP:
-                        OnMouseCaptured?.Invoke(KeyState.Up, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
+                        if(mouseData == 0x1)
+                        {
+                            IsXButton1Pressed = false;
+                            OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
+                        }
+                        else
+                        {
+                            IsXButton2Pressed = false;
+                            OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
+                        }
                         break;
                     case WM_XBUTTONDBLCLK:
                         OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
                         break;
                     case WM_NCXBUTTONDOWN:
-                        OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
+                        if (mouseData == 0x1)
+                        {
+                            IsXButton1Pressed = true;
+                            OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
+                        }
+                        else
+                        {
+                            IsXButton2Pressed = true;
+                            OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
+                        }
                         break;
                     case WM_NCXBUTTONUP:
-                        OnMouseCaptured?.Invoke(KeyState.Up, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
+                        if (mouseData == 0x1)
+                        {
+                            IsXButton1Pressed = false;
+                            OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
+                        }
+                        else
+                        {
+                            IsXButton2Pressed = false;
+                            OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
+                        }
                         break;
                     case WM_NCXBUTTONDBLCLK:
                         OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
