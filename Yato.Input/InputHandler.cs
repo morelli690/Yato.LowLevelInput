@@ -133,6 +133,28 @@ namespace Yato.Input
             if (eventIndex < 0) return false;
             if (eventIndex >= namedEventList.Count) return false;
 
+            // the mouse hook does not receive multiple down or up events
+            var key = namedEventList[eventIndex];
+
+            switch(key)
+            {
+                case VirtualKeyCode.LBUTTON:
+                    if (mouseHook.IsLeftMouseButtonPressed) return true;
+                    break;
+                case VirtualKeyCode.RBUTTON:
+                    if (mouseHook.IsRightMouseButtonPressed) return true;
+                    break;
+                case VirtualKeyCode.MBUTTON:
+                    if (mouseHook.IsMiddleMouseButtonPressed) return true;
+                    break;
+                case VirtualKeyCode.XBUTTON1:
+                    if (mouseHook.IsXButton1Pressed) return true;
+                    break;
+                case VirtualKeyCode.XBUTTON2:
+                    if (mouseHook.IsXButton2Pressed) return true;
+                    break;
+            }
+
             if (timeout < -1) timeout *= -1;
 
             bool result = false;
