@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InputHandler.cs" />
+    <Compile Include="KeyCodeConverter.cs" />
     <Compile Include="KeyState.cs" />
     <Compile Include="LowLevelKeyboardHook.cs" />
     <Compile Include="LowLevelMouseHook.cs" />

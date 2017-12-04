@@ -188,6 +188,19 @@ namespace Yato.Input
                 {
                 }
 
+                try
+                {
+                    if(Monitor.TryEnter(lockObject))
+                    {
+                        Monitor.PulseAll(lockObject);
+                        Monitor.Exit(lockObject);
+                    }
+                }
+                catch
+                {
+
+                }
+
                 UninstallHook();
 
                 disposedValue = true;
