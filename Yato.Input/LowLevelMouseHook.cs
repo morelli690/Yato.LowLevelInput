@@ -9,67 +9,6 @@ namespace Yato.Input
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
-        #region PInvoke
-
-        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        private const int WH_MOUSE_LL = 14;
-
-        private const uint WM_QUIT = 0x0012;
-
-        private const uint WM_MOUSEMOVE = 0x0200;
-
-        private const uint WM_LBUTTONDOWN = 0x0201;
-        private const uint WM_LBUTTONUP = 0x0202;
-
-        private const uint WM_RBUTTONDOWN = 0x0204;
-        private const uint WM_RBUTTONUP = 0x0205;
-
-        private const uint WM_MOUSEWHEEL = 0x020A;
-        private const uint WM_MOUSEHWHEEL = 0x020E;
-
-        private const uint WM_XBUTTONDOWN = 0x020B;
-        private const uint WM_XBUTTONUP = 0x020C;
-
-        private const uint WM_XBUTTONDBLCLK = 0x020D;
-
-        private const uint WM_NCXBUTTONDOWN = 0x00AB;
-        private const uint WM_NCXBUTTONUP = 0x00AC;
-
-        private const uint WM_NCXBUTTONDBLCLK = 0x00AD;
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowsHookExW")]
-        private static extern IntPtr SetWindowsHookEx(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelMouseProc hookProcedure, IntPtr hModule, uint threadId);
-
-        [DllImport("user32.dll")]
-        private static extern int UnhookWindowsHookEx(IntPtr hHook);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        private static extern int GetMessage(ref Message lpMessage, IntPtr hwnd, uint msgFilterMin, uint msgFilterMax);
-
-        [DllImport("user32.dll", EntryPoint = "PostThreadMessageW")]
-        private static extern int PostThreadMessage(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll")]
-        private static extern uint GetCurrentThreadId();
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct Message
-        {
-            public IntPtr Hwnd;
-            public uint Msg;
-            public IntPtr lParam;
-            public IntPtr wParam;
-            public uint Time;
-            public int X;
-            public int Y;
-        }
-
-        #endregion
-
         private object lockObject;
 
         private IntPtr hookHandle;
@@ -132,7 +71,7 @@ namespace Yato.Input
                 if (hookThreadId == 0) return false;
                 if (hookThread == null) return false;
 
-                if (PostThreadMessage(hookThreadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
+                if (PInvoke.PostThreadMessage(hookThreadId, PInvoke.WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
                 {
                     try
                     {
@@ -156,9 +95,9 @@ namespace Yato.Input
         {
             lock (lockObject)
             {
-                hookThreadId = GetCurrentThreadId();
+                hookThreadId = PInvoke.GetCurrentThreadId();
 
-                hookHandle = SetWindowsHookEx(WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
+                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
 
                 if (hookHandle == IntPtr.Zero)
                 {
@@ -168,16 +107,16 @@ namespace Yato.Input
 
             // we need to start a message loop here to keep the hook working
 
-            Message msg = new Message();
+            PInvoke.Message msg = new PInvoke.Message();
 
             // we actually do not care on any window messages
-            while (GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
+            while (PInvoke.GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
             {
             }
 
             // Unhook in the same thread
 
-            UnhookWindowsHookEx(hookHandle);
+            PInvoke.UnhookWindowsHookEx(hookHandle);
         }
 
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
@@ -195,15 +134,15 @@ namespace Yato.Input
 
                 switch (msg)
                 {
-                    case WM_LBUTTONDOWN:
+                    case PInvoke.WM_LBUTTONDOWN:
                         IsLeftMouseButtonPressed = true;
                         OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
                         break;
-                    case WM_LBUTTONUP:
+                    case PInvoke.WM_LBUTTONUP:
                         IsLeftMouseButtonPressed = false;
                         OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
                         break;
-                    case WM_MOUSEHWHEEL:
+                    case PInvoke.WM_MOUSEHWHEEL:
                         // get the high word:
                         short hiword = BitConverter.ToInt16(BitConverter.GetBytes(mouseData), 0);
 
@@ -219,11 +158,11 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.None, VirtualKeyCode.SCROLL, hiword, hiword);
                         }
                         break;
-                    case WM_MOUSEMOVE:
+                    case PInvoke.WM_MOUSEMOVE:
                         if (!CaptureMouseMove) break;
                         OnMouseCaptured?.Invoke(KeyState.None, VirtualKeyCode.NONAME, x, y);
                         break;
-                    case WM_MOUSEWHEEL:
+                    case PInvoke.WM_MOUSEWHEEL:
                         // get the high word:
                         short hiword_2 = BitConverter.ToInt16(BitConverter.GetBytes(mouseData), 0);
 
@@ -239,15 +178,15 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.None, VirtualKeyCode.SCROLL, hiword_2, hiword_2);
                         }
                         break;
-                    case WM_RBUTTONDOWN:
+                    case PInvoke.WM_RBUTTONDOWN:
                         IsRightMouseButtonPressed = true;
                         OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
                         break;
-                    case WM_RBUTTONUP:
+                    case PInvoke.WM_RBUTTONUP:
                         IsRightMouseButtonPressed = false;
                         OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
                         break;
-                    case WM_XBUTTONDOWN:
+                    case PInvoke.WM_XBUTTONDOWN:
                         if(mouseData == 0x1)
                         {
                             IsXButton1Pressed = true;
@@ -259,7 +198,7 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
                         }
                         break;
-                    case WM_XBUTTONUP:
+                    case PInvoke.WM_XBUTTONUP:
                         if(mouseData == 0x1)
                         {
                             IsXButton1Pressed = false;
@@ -271,10 +210,10 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
                         }
                         break;
-                    case WM_XBUTTONDBLCLK:
+                    case PInvoke.WM_XBUTTONDBLCLK:
                         OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
                         break;
-                    case WM_NCXBUTTONDOWN:
+                    case PInvoke.WM_NCXBUTTONDOWN:
                         if (mouseData == 0x1)
                         {
                             IsXButton1Pressed = true;
@@ -286,7 +225,7 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
                         }
                         break;
-                    case WM_NCXBUTTONUP:
+                    case PInvoke.WM_NCXBUTTONUP:
                         if (mouseData == 0x1)
                         {
                             IsXButton1Pressed = false;
@@ -298,13 +237,13 @@ namespace Yato.Input
                             OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
                         }
                         break;
-                    case WM_NCXBUTTONDBLCLK:
+                    case PInvoke.WM_NCXBUTTONDBLCLK:
                         OnMouseCaptured?.Invoke(KeyState.Down, mouseData == 0x1 ? VirtualKeyCode.XBUTTON1 : VirtualKeyCode.XBUTTON2, x, y);
                         break;
                 }
             }
 
-            return CallNextHookEx(hookHandle, nCode, wParam, lParam);
+            return PInvoke.CallNextHookEx(hookHandle, nCode, wParam, lParam);
         }
 
         #region IDisposable Support

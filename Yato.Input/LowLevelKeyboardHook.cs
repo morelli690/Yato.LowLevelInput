@@ -9,51 +9,6 @@ namespace Yato.Input
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
-        #region PInvoke
-
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        private const int WH_KEYBOARD_LL = 13;
-
-        private const uint WM_QUIT = 0x0012;
-
-        private const uint WM_KEYDOWN = 0x0100;
-        private const uint WM_KEYUP = 0x0101;
-        private const uint WM_SYSKEYDOWN = 0x0104;
-        private const uint WM_SYSKEYUP = 0x0105;
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowsHookExW")]
-        private static extern IntPtr SetWindowsHookEx(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelKeyboardProc hookProcedure, IntPtr hModule, uint threadId);
-
-        [DllImport("user32.dll")]
-        private static extern int UnhookWindowsHookEx(IntPtr hHook);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        private static extern int GetMessage(ref Message lpMessage, IntPtr hwnd, uint msgFilterMin, uint msgFilterMax);
-
-        [DllImport("user32.dll", EntryPoint = "PostThreadMessageW")]
-        private static extern int PostThreadMessage(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll")]
-        private static extern uint GetCurrentThreadId();
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct Message
-        {
-            public IntPtr Hwnd;
-            public uint Msg;
-            public IntPtr lParam;
-            public IntPtr wParam;
-            public uint Time;
-            public int X;
-            public int Y;
-        }
-
-        #endregion
-
         private object lockObject;
 
         private IntPtr hookHandle;
@@ -101,7 +56,7 @@ namespace Yato.Input
                 if (hookThreadId == 0) return false;
                 if (hookThread == null) return false;
 
-                if (PostThreadMessage(hookThreadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
+                if (PInvoke.PostThreadMessage(hookThreadId, PInvoke.WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
                 {
                     try
                     {
@@ -125,9 +80,9 @@ namespace Yato.Input
         {
             lock (lockObject)
             {
-                hookThreadId = GetCurrentThreadId();
+                hookThreadId = PInvoke.GetCurrentThreadId();
 
-                hookHandle = SetWindowsHookEx(WH_KEYBOARD_LL, HookProcedure, MainModuleHandle, 0);
+                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, HookProcedure, MainModuleHandle, 0);
 
                 if (hookHandle == IntPtr.Zero)
                 {
@@ -137,16 +92,16 @@ namespace Yato.Input
 
             // we need to start a message loop here to keep the hook working
 
-            Message msg = new Message();
+            PInvoke.Message msg = new PInvoke.Message();
 
             // we actually do not care on any window messages
-            while (GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
+            while (PInvoke.GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
             {
             }
 
             // Unhook in the same thread
 
-            UnhookWindowsHookEx(hookHandle);
+            PInvoke.UnhookWindowsHookEx(hookHandle);
         }
 
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
@@ -158,23 +113,23 @@ namespace Yato.Input
 
                 switch (msg)
                 {
-                    case WM_KEYDOWN:
+                    case PInvoke.WM_KEYDOWN:
                         OnKeyCaptured?.Invoke(KeyState.Down, key);
                         break;
-                    case WM_KEYUP:
+                    case PInvoke.WM_KEYUP:
                         OnKeyCaptured?.Invoke(KeyState.Up, key);
                         break;
-                    case WM_SYSKEYDOWN:
+                    case PInvoke.WM_SYSKEYDOWN:
                         OnKeyCaptured?.Invoke(KeyState.Down, key);
                         break;
-                    case WM_SYSKEYUP:
+                    case PInvoke.WM_SYSKEYUP:
                         OnKeyCaptured?.Invoke(KeyState.Up, key);
                         break;
                 }
 
             }
 
-            return CallNextHookEx(hookHandle, nCode, wParam, lParam);
+            return PInvoke.CallNextHookEx(hookHandle, nCode, wParam, lParam);
         }
 
         #region IDisposable Support
