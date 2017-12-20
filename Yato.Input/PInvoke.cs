@@ -40,23 +40,23 @@ namespace Yato.Input
 
         public const uint WM_NCXBUTTONDBLCLK = 0x00AD;
 
-        [DllImport("user32.dll", EntryPoint = "SetWindowsHookExW")]
-        public static extern IntPtr SetWindowsHookEx(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelKeyboardProc hookProcedure, IntPtr hModule, uint threadId);
+        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelKeyboardProc hookProcedure, IntPtr hModule, uint threadId);
+        public static SetWindowsHookEx_t SetWindowsHookEx = WinApi.GetMethod<SetWindowsHookEx_t>("user32.dll", "SetWindowsHookExW");
 
-        [DllImport("user32.dll")]
-        public static extern int UnhookWindowsHookEx(IntPtr hHook);
+        public delegate int UnhookWindowsHookEx_t(IntPtr hHook);
+        public static UnhookWindowsHookEx_t UnhookWindowsHookEx = WinApi.GetMethod<UnhookWindowsHookEx_t>("user32.dll", "UnhookWindowsHookEx");
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+        public delegate IntPtr CallNextHookEx_t(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+        public static CallNextHookEx_t CallNextHookEx = WinApi.GetMethod<CallNextHookEx_t>("user32.dll", "CallNextHookEx");
 
-        [DllImport("user32.dll")]
-        public static extern int GetMessage(ref Message lpMessage, IntPtr hwnd, uint msgFilterMin, uint msgFilterMax);
+        public delegate int GetMessage_t(ref Message lpMessage, IntPtr hwnd, uint msgFilterMin, uint msgFilterMax);
+        public static GetMessage_t GetMessage = WinApi.GetMethod<GetMessage_t>("user32.dll", "GetMessage");
 
-        [DllImport("user32.dll", EntryPoint = "PostThreadMessageW")]
-        public static extern int PostThreadMessage(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
+        public delegate int PostThreadMessage_t(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
+        public static PostThreadMessage_t PostThreadMessage = WinApi.GetMethod<PostThreadMessage_t>("user32.dll", "PostThreadMessageW");
 
-        [DllImport("kernel32.dll")]
-        public static extern uint GetCurrentThreadId();
+        public delegate uint GetCurrentThreadId_t();
+        public static GetCurrentThreadId_t GetCurrentThreadId = WinApi.GetMethod<GetCurrentThreadId_t>("kernel32.dll", "GetCurrentThreadId");
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Message
@@ -70,4 +70,53 @@ namespace Yato.Input
             public int Y;
         }
     }
+
+    #region LoadLibrary and GetProcAddress
+
+    internal static class WinApi
+    {
+        [DllImport("kernel32.dll", EntryPoint = "GetProcAddress", SetLastError = false, CharSet = CharSet.Ansi)]
+        private static extern IntPtr getProcAddress(IntPtr hmodule, string procName);
+
+        [DllImport("kernel32.dll", EntryPoint = "LoadLibraryW", SetLastError = false, CharSet = CharSet.Unicode)]
+        private static extern IntPtr loadLibraryW(string lpFileName);
+
+        [DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", SetLastError = false, CharSet = CharSet.Unicode)]
+        private static extern IntPtr getModuleHandle(string modulename);
+
+        public static IntPtr GetProcAddress(string modulename, string procname)
+        {
+            IntPtr hModule = getModuleHandle(modulename);
+
+            if (hModule == IntPtr.Zero) hModule = loadLibraryW(modulename);
+
+            return getProcAddress(hModule, procname);
+        }
+
+        public static T GetMethod<T>(string modulename, string procname)
+        {
+            IntPtr hModule = getModuleHandle(modulename);
+
+            if (hModule == IntPtr.Zero) hModule = loadLibraryW(modulename);
+
+            IntPtr procAddress = getProcAddress(hModule, procname);
+
+#if DEBUG
+            if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
+                throw new Exception("module: " + modulename + "\tproc: " + procname);
+#endif
+
+            if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
+                return default(T);
+
+            return (T)(object)Marshal.GetDelegateForFunctionPointer(procAddress, ObfuscatorNeedsThis<T>());
+        }
+
+        private static Type ObfuscatorNeedsThis<T>()
+        {
+            return typeof(T);
+        }
+    }
+
+    #endregion
 }
