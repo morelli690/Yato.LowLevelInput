@@ -201,6 +201,15 @@ namespace Yato.Input
             return vkStrings[index];
         }
 
+        public static string ToString(int index)
+        {
+            if (index < 0) return string.Empty;
+
+            if (index >= vkStrings.Length) return string.Empty;
+
+            return vkStrings[index];
+        }
+
         public static VirtualKeyCode ToVirtualKeyCode(string name)
         {
             name = name.ToUpper();
