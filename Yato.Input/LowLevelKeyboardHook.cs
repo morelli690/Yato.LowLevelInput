@@ -91,6 +91,8 @@ namespace Yato.Input
                 keyboardProcReference = new PInvoke.HookProc(HookProcedure);
                 gcHandle = GCHandle.Alloc(keyboardProcReference);
 
+                GC.KeepAlive(keyboardProcReference); // GC does not touch any variables in this method until the method returns
+
                 hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, keyboardProcReference, MainModuleHandle, 0);
 
                 if (hookHandle == IntPtr.Zero)

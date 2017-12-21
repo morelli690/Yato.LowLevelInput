@@ -900,6 +900,7 @@ namespace Yato.Input
                 //This code will crash when you run the Release build of your program without a debugger.
                 keyboardProcReference = new PInvoke.HookProc(HookProcedure);
                 gcHandle = GCHandle.Alloc(keyboardProcReference);
+                GC.KeepAlive(keyboardProcReference); // GC does not touch any variables in this method until the method returns
                 hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, keyboardProcReference, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
@@ -1057,8 +1058,10 @@ namespace Yato.Input
                 hookThreadId = PInvoke.GetCurrentThreadId();
                 //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
                 //This code will crash when you run the Release build of your program without a debugger.
+                
                 mouseProcReference = new PInvoke.HookProc(HookProcedure);
                 gcHandle = GCHandle.Alloc(mouseProcReference);
+                GC.KeepAlive(mouseProcReference); // GC does not touch any variables in this method until the method returns
                 hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
