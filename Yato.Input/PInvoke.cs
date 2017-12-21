@@ -5,8 +5,7 @@ namespace Yato.Input
 {
     internal static class PInvoke
     {
-        public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-        public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         public const int WH_KEYBOARD_LL = 13;
 
@@ -40,7 +39,7 @@ namespace Yato.Input
 
         public const uint WM_NCXBUTTONDBLCLK = 0x00AD;
 
-        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelKeyboardProc hookProcedure, IntPtr hModule, uint threadId);
+        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] HookProc hookProcedure, IntPtr hModule, uint threadId);
         public static SetWindowsHookEx_t SetWindowsHookEx = WinApi.GetMethod<SetWindowsHookEx_t>("user32.dll", "SetWindowsHookExW");
 
         public delegate int UnhookWindowsHookEx_t(IntPtr hHook);
@@ -105,9 +104,6 @@ namespace Yato.Input
             if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
                 throw new Exception("module: " + modulename + "\tproc: " + procname);
 #endif
-
-            if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
-                return default(T);
 
             return (T)(object)Marshal.GetDelegateForFunctionPointer(procAddress, ObfuscatorNeedsThis<T>());
         }

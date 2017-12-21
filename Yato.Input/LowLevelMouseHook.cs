@@ -11,6 +11,9 @@ namespace Yato.Input
 
         private object lockObject;
 
+        private PInvoke.HookProc mouseProcReference;
+        private GCHandle gcHandle;
+
         private IntPtr hookHandle;
 
         private uint hookThreadId;
@@ -97,6 +100,12 @@ namespace Yato.Input
             {
                 hookThreadId = PInvoke.GetCurrentThreadId();
 
+                //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
+                //This code will crash when you run the Release build of your program without a debugger.
+
+                mouseProcReference = new PInvoke.HookProc(HookProcedure);
+                gcHandle = GCHandle.Alloc(mouseProcReference);
+
                 hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
 
                 if (hookHandle == IntPtr.Zero)
@@ -117,6 +126,7 @@ namespace Yato.Input
             // Unhook in the same thread
 
             PInvoke.UnhookWindowsHookEx(hookHandle);
+            gcHandle.Free();
         }
 
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
@@ -126,6 +136,15 @@ namespace Yato.Input
                 IsMiddleMouseButtonPressed = false; // reset
 
                 uint msg = (uint)wParam.ToInt32();
+
+                try
+                {
+                    if (lParam == IntPtr.Zero) return PInvoke.CallNextHookEx(hookHandle, nCode, wParam, lParam);
+                }
+                catch
+                {
+
+                }
 
                 int x = Marshal.ReadInt32(lParam);
                 int y = Marshal.ReadInt32(lParam + 4);

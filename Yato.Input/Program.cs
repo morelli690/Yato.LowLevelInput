@@ -11,18 +11,50 @@ namespace Yato.Input
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(KeyCodeConverter.ToString(VirtualKeyCode.SPACE));
+            //printItemDictionary();
 
-            Console.ReadLine();
+            //Console.WriteLine(KeyCodeConverter.ToString(VirtualKeyCode.SPACE));
+
+            //Console.ReadLine();
 
             //printKeyCodeArray();
 
-            //using (var input = new InputHandler(true))
-            //{
-            //    input.OnInputCaptured += Input_OnInputCaptured;
+            using (var input = new InputHandler(false))
+            {
+                input.OnInputCaptured += Input_OnInputCaptured;
 
-            //    Console.ReadLine();
-            //}
+                Console.ReadLine();
+            }
+        }
+
+        private static void printItemDictionary()
+        {
+            Dictionary<string, int> stringToItem = new Dictionary<string, int>();
+            Dictionary<int, string> itemToString = new Dictionary<int, string>();
+
+            foreach(var value in Enum.GetValues(typeof(ItemDefinitionIndex)))
+            {
+                itemToString.Add((int)value, Enum.GetName(typeof(ItemDefinitionIndex), value));
+                stringToItem.Add(Enum.GetName(typeof(ItemDefinitionIndex), value), (int)value);
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach(var pair in stringToItem)
+            {
+                sb.AppendLine("stringToItem.Add(\"" + pair.Key + "\", " + pair.Value.ToString() + ");");
+            }
+
+            sb.AppendLine();
+
+            foreach (var pair in itemToString)
+            {
+                sb.AppendLine("itemToString.Add(" + pair.Key.ToString() + ", \"" + pair.Value + "\");");
+            }
+
+            Console.WriteLine(sb.ToString());
+
+            Console.ReadLine();
         }
 
         private static void printKeyCodeArray()

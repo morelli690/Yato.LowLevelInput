@@ -313,8 +313,8 @@ namespace Yato.Input
                     namedEventList = null;
                 }
 
-                keyboardHook.Dispose();
-                mouseHook.Dispose();
+                if (keyboardHook != null) keyboardHook.Dispose();
+                if (mouseHook != null) mouseHook.Dispose();
 
                 disposedValue = true;
             }

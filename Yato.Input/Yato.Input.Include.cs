@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 namespace Yato.Input
 {
     public class InputHandler : IDisposable
@@ -258,8 +258,8 @@ namespace Yato.Input
                     namedEventMonitor = null;
                     namedEventList = null;
                 }
-                keyboardHook.Dispose();
-                mouseHook.Dispose();
+                if (keyboardHook != null) keyboardHook.Dispose();
+                if (mouseHook != null) mouseHook.Dispose();
                 disposedValue = true;
             }
         }
@@ -269,6 +269,65 @@ namespace Yato.Input
             GC.SuppressFinalize(this);
         }
         #endregion
+    }
+}
+namespace Yato.Input
+{
+    internal enum ItemDefinitionIndex
+    {
+        DESERT_DEAGLE = 1,
+        DUAL_BERRETAS = 2,
+        FIVE_SEVEN = 3,
+        GLOCK_18 = 4,
+        AK_47 = 7,
+        AUG = 8,
+        AWP = 9,
+        FAMAS = 10,
+        G3SG1 = 11,
+        GALIL_AR = 13,
+        M249 = 14,
+        M4A4 = 16,
+        MAC_10 = 17,
+        P90 = 19,
+        UMP_45 = 24,
+        XM1014 = 25,
+        PP_BIZON = 26,
+        MAG_7 = 27,
+        NEGEV = 28,
+        SAWED_OFF = 29,
+        TEC_9 = 30,
+        ZEUS_X27 = 31,
+        P2000 = 32,
+        MP7 = 33,
+        MP9 = 34,
+        NOVA = 35,
+        P250 = 36,
+        SCAR_20 = 38,
+        SG_553 = 39,
+        SSG08 = 40,
+        DEFAULT_CT = 42,
+        FLASHGRENADE = 43,
+        HE_GRENADE = 44,
+        SMOKE_GRENADE = 45,
+        MOLOTOV_GRENADE = 46,
+        DECOY_GRENADE = 47,
+        INCENDIARY_GRENADE = 48,
+        C4 = 49,
+        DEFAULT_T = 59,
+        M4A1_S = 60,
+        USP_S = 61,
+        CZ75_AUTO = 63,
+        R8_REVOLVER = 64,
+        KNIFE_BAYONET = 500,
+        KNIFE_FLIP = 505,
+        KNIFE_GUT = 506,
+        KNIFE_KARAMBIT = 507,
+        KNIFE_M9_BAYONET = 508,
+        KNIFE_HUNTSMAN = 509,
+        KNIFE_FALCHION = 512,
+        KNIFE_BOWIE = 514,
+        KNIFE_BUTTERFLY = 515,
+        KNIFE_SHADOW = 516
     }
 }
 namespace Yato.Input
@@ -285,21 +344,26 @@ namespace Yato.Input
             "MBUTTON",
             "XBUTTON1",
             "XBUTTON2",
+            "",
             "BACK",
             "TAB",
+            "",
+            "",
             "CLEAR",
             "RETURN",
+            "",
+            "",
             "SHIFT",
             "CONTROL",
             "MENU",
             "PAUSE",
             "CAPITAL",
-            "KANA",
+            "HANGUL",
             "HANGUL",
             "JUNJA",
             "FINAL",
             "HANJA",
-            "KANJI",
+            "HANJA",
             "ESCAPE",
             "CONVERT",
             "NONCONVERT",
@@ -331,6 +395,13 @@ namespace Yato.Input
             "Seven",
             "Eight",
             "Nine",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "A",
             "B",
             "C",
@@ -360,6 +431,7 @@ namespace Yato.Input
             "LWIN",
             "RWIN",
             "APPS",
+            "",
             "SLEEP",
             "NUMPAD0",
             "NUMPAD1",
@@ -401,8 +473,30 @@ namespace Yato.Input
             "F22",
             "F23",
             "F24",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "NUMLOCK",
             "SCROLL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "LSHIFT",
             "RSHIFT",
             "LCONTROL",
@@ -427,6 +521,8 @@ namespace Yato.Input
             "LAUNCH_MEDIA_SELECT",
             "LAUNCH_APP1",
             "LAUNCH_APP2",
+            "",
+            "",
             "OEM_1",
             "OEM_PLUS",
             "OEM_COMMA",
@@ -434,14 +530,59 @@ namespace Yato.Input
             "OEM_PERIOD",
             "OEM_2",
             "OEM_3",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "OEM_4",
             "OEM_5",
             "OEM_6",
             "OEM_7",
             "OEM_8",
+            "",
+            "",
             "OEM_102",
+            "",
+            "",
             "PROCESSKEY",
+            "",
             "PACKET",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             "ATTN",
             "CRSEL",
             "EXSEL",
@@ -452,6 +593,182 @@ namespace Yato.Input
             "PA1",
             "OEM_CLEAR",
         };
+        //private static string[] vkStrings = new string[]
+        //{
+        //    "HOTKEY",
+        //    "LBUTTON",
+        //    "RBUTTON",
+        //    "CANCEL",
+        //    "MBUTTON",
+        //    "XBUTTON1",
+        //    "XBUTTON2",
+        //    "BACK",
+        //    "TAB",
+        //    "CLEAR",
+        //    "RETURN",
+        //    "SHIFT",
+        //    "CONTROL",
+        //    "MENU",
+        //    "PAUSE",
+        //    "CAPITAL",
+        //    "KANA",
+        //    "HANGUL",
+        //    "JUNJA",
+        //    "FINAL",
+        //    "HANJA",
+        //    "KANJI",
+        //    "ESCAPE",
+        //    "CONVERT",
+        //    "NONCONVERT",
+        //    "ACCEPT",
+        //    "MODECHANGE",
+        //    "SPACE",
+        //    "PRIOR",
+        //    "NEXT",
+        //    "END",
+        //    "HOME",
+        //    "LEFT",
+        //    "UP",
+        //    "RIGHT",
+        //    "DOWN",
+        //    "SELECT",
+        //    "PRINT",
+        //    "EXECUTE",
+        //    "SNAPSHOT",
+        //    "INSERT",
+        //    "DELETE",
+        //    "HELP",
+        //    "Zero",
+        //    "One",
+        //    "Two",
+        //    "Three",
+        //    "Four",
+        //    "Five",
+        //    "Six",
+        //    "Seven",
+        //    "Eight",
+        //    "Nine",
+        //    "A",
+        //    "B",
+        //    "C",
+        //    "D",
+        //    "E",
+        //    "F",
+        //    "G",
+        //    "H",
+        //    "I",
+        //    "J",
+        //    "K",
+        //    "L",
+        //    "M",
+        //    "N",
+        //    "O",
+        //    "P",
+        //    "Q",
+        //    "R",
+        //    "S",
+        //    "T",
+        //    "U",
+        //    "V",
+        //    "W",
+        //    "X",
+        //    "Y",
+        //    "Z",
+        //    "LWIN",
+        //    "RWIN",
+        //    "APPS",
+        //    "SLEEP",
+        //    "NUMPAD0",
+        //    "NUMPAD1",
+        //    "NUMPAD2",
+        //    "NUMPAD3",
+        //    "NUMPAD4",
+        //    "NUMPAD5",
+        //    "NUMPAD6",
+        //    "NUMPAD7",
+        //    "NUMPAD8",
+        //    "NUMPAD9",
+        //    "MULTIPLY",
+        //    "ADD",
+        //    "SEPARATOR",
+        //    "SUBTRACT",
+        //    "DECIMAL",
+        //    "DIVIDE",
+        //    "F1",
+        //    "F2",
+        //    "F3",
+        //    "F4",
+        //    "F5",
+        //    "F6",
+        //    "F7",
+        //    "F8",
+        //    "F9",
+        //    "F10",
+        //    "F11",
+        //    "F12",
+        //    "F13",
+        //    "F14",
+        //    "F15",
+        //    "F16",
+        //    "F17",
+        //    "F18",
+        //    "F19",
+        //    "F20",
+        //    "F21",
+        //    "F22",
+        //    "F23",
+        //    "F24",
+        //    "NUMLOCK",
+        //    "SCROLL",
+        //    "LSHIFT",
+        //    "RSHIFT",
+        //    "LCONTROL",
+        //    "RCONTROL",
+        //    "LMENU",
+        //    "RMENU",
+        //    "BROWSER_BACK",
+        //    "BROWSER_FORWARD",
+        //    "BROWSER_REFRESH",
+        //    "BROWSER_STOP",
+        //    "BROWSER_SEARCH",
+        //    "BROWSER_FAVORITES",
+        //    "BROWSER_HOME",
+        //    "VOLUME_MUTE",
+        //    "VOLUME_DOWN",
+        //    "VOLUME_UP",
+        //    "MEDIA_NEXT_TRACK",
+        //    "MEDIA_PREV_TRACK",
+        //    "MEDIA_STOP",
+        //    "MEDIA_PLAY_PAUSE",
+        //    "LAUNCH_MAIL",
+        //    "LAUNCH_MEDIA_SELECT",
+        //    "LAUNCH_APP1",
+        //    "LAUNCH_APP2",
+        //    "OEM_1",
+        //    "OEM_PLUS",
+        //    "OEM_COMMA",
+        //    "OEM_MINUS",
+        //    "OEM_PERIOD",
+        //    "OEM_2",
+        //    "OEM_3",
+        //    "OEM_4",
+        //    "OEM_5",
+        //    "OEM_6",
+        //    "OEM_7",
+        //    "OEM_8",
+        //    "OEM_102",
+        //    "PROCESSKEY",
+        //    "PACKET",
+        //    "ATTN",
+        //    "CRSEL",
+        //    "EXSEL",
+        //    "EREOF",
+        //    "PLAY",
+        //    "ZOOM",
+        //    "NONAME",
+        //    "PA1",
+        //    "OEM_CLEAR",
+        //};
         private static string[] stateStrings = new string[]
         {
             "None",
@@ -520,6 +837,8 @@ namespace Yato.Input
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
         private object lockObject;
+        private PInvoke.HookProc keyboardProcReference;
+        private GCHandle gcHandle;
         private IntPtr hookHandle;
         private uint hookThreadId;
         private Thread hookThread;
@@ -577,7 +896,11 @@ namespace Yato.Input
             lock (lockObject)
             {
                 hookThreadId = PInvoke.GetCurrentThreadId();
-                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, HookProcedure, MainModuleHandle, 0);
+                //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
+                //This code will crash when you run the Release build of your program without a debugger.
+                keyboardProcReference = new PInvoke.HookProc(HookProcedure);
+                gcHandle = GCHandle.Alloc(keyboardProcReference);
+                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, keyboardProcReference, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
                     throw new Exception("Failed to create LowLevelKeyboardHook");
@@ -591,12 +914,20 @@ namespace Yato.Input
             }
             // Unhook in the same thread
             PInvoke.UnhookWindowsHookEx(hookHandle);
+            gcHandle.Free();
         }
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode == 0) // wParam and lParam are set
             {
                 uint msg = (uint)wParam.ToInt32();
+                try
+                {
+                    if (lParam == IntPtr.Zero) return PInvoke.CallNextHookEx(hookHandle, nCode, wParam, lParam);
+                }
+                catch
+                {
+                }
                 VirtualKeyCode key = (VirtualKeyCode)Marshal.ReadInt32(lParam);
                 switch (msg)
                 {
@@ -654,6 +985,8 @@ namespace Yato.Input
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
         private object lockObject;
+        private PInvoke.HookProc mouseProcReference;
+        private GCHandle gcHandle;
         private IntPtr hookHandle;
         private uint hookThreadId;
         private Thread hookThread;
@@ -722,6 +1055,10 @@ namespace Yato.Input
             lock (lockObject)
             {
                 hookThreadId = PInvoke.GetCurrentThreadId();
+                //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
+                //This code will crash when you run the Release build of your program without a debugger.
+                mouseProcReference = new PInvoke.HookProc(HookProcedure);
+                gcHandle = GCHandle.Alloc(mouseProcReference);
                 hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
@@ -736,6 +1073,7 @@ namespace Yato.Input
             }
             // Unhook in the same thread
             PInvoke.UnhookWindowsHookEx(hookHandle);
+            gcHandle.Free();
         }
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -743,6 +1081,13 @@ namespace Yato.Input
             {
                 IsMiddleMouseButtonPressed = false; // reset
                 uint msg = (uint)wParam.ToInt32();
+                try
+                {
+                    if (lParam == IntPtr.Zero) return PInvoke.CallNextHookEx(hookHandle, nCode, wParam, lParam);
+                }
+                catch
+                {
+                }
                 int x = Marshal.ReadInt32(lParam);
                 int y = Marshal.ReadInt32(lParam + 4);
                 int mouseData = Marshal.ReadInt32(lParam + 8);
@@ -890,8 +1235,7 @@ namespace Yato.Input
 {
     internal static class PInvoke
     {
-        public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-        public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
         public const int WH_KEYBOARD_LL = 13;
         public const uint WM_QUIT = 0x0012;
         public const uint WM_KEYDOWN = 0x0100;
@@ -912,14 +1256,14 @@ namespace Yato.Input
         public const uint WM_NCXBUTTONDOWN = 0x00AB;
         public const uint WM_NCXBUTTONUP = 0x00AC;
         public const uint WM_NCXBUTTONDBLCLK = 0x00AD;
-        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] LowLevelKeyboardProc hookProcedure, IntPtr hModule, uint threadId);
+        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] HookProc hookProcedure, IntPtr hModule, uint threadId);
         public static SetWindowsHookEx_t SetWindowsHookEx = WinApi.GetMethod<SetWindowsHookEx_t>("user32.dll", "SetWindowsHookExW");
         public delegate int UnhookWindowsHookEx_t(IntPtr hHook);
         public static UnhookWindowsHookEx_t UnhookWindowsHookEx = WinApi.GetMethod<UnhookWindowsHookEx_t>("user32.dll", "UnhookWindowsHookEx");
         public delegate IntPtr CallNextHookEx_t(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
         public static CallNextHookEx_t CallNextHookEx = WinApi.GetMethod<CallNextHookEx_t>("user32.dll", "CallNextHookEx");
         public delegate int GetMessage_t(ref Message lpMessage, IntPtr hwnd, uint msgFilterMin, uint msgFilterMax);
-        public static GetMessage_t GetMessage = WinApi.GetMethod<GetMessage_t>("user32.dll", "GetMessage");
+        public static GetMessage_t GetMessage = WinApi.GetMethod<GetMessage_t>("user32.dll", "GetMessageW");
         public delegate int PostThreadMessage_t(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
         public static PostThreadMessage_t PostThreadMessage = WinApi.GetMethod<PostThreadMessage_t>("user32.dll", "PostThreadMessageW");
         public delegate uint GetCurrentThreadId_t();
@@ -960,8 +1304,6 @@ namespace Yato.Input
             if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
                 throw new Exception("module: " + modulename + "\tproc: " + procname);
 #endif
-            if (hModule == IntPtr.Zero || procAddress == IntPtr.Zero)
-                return default(T);
             return (T)(object)Marshal.GetDelegateForFunctionPointer(procAddress, ObfuscatorNeedsThis<T>());
         }
         private static Type ObfuscatorNeedsThis<T>()

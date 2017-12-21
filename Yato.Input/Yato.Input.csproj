@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InputHandler.cs" />
+    <Compile Include="ItemDefinitionIndex.cs" />
     <Compile Include="KeyCodeConverter.cs" />
     <Compile Include="KeyState.cs" />
     <Compile Include="LowLevelKeyboardHook.cs" />
