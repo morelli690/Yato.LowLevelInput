@@ -838,7 +838,6 @@ namespace Yato.Input
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
         private object lockObject;
         private PInvoke.HookProc keyboardProcReference;
-        private GCHandle gcHandle;
         private IntPtr hookHandle;
         private uint hookThreadId;
         private Thread hookThread;
@@ -896,12 +895,9 @@ namespace Yato.Input
             lock (lockObject)
             {
                 hookThreadId = PInvoke.GetCurrentThreadId();
-                //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
-                //This code will crash when you run the Release build of your program without a debugger.
                 keyboardProcReference = new PInvoke.HookProc(HookProcedure);
-                gcHandle = GCHandle.Alloc(keyboardProcReference);
-                GC.KeepAlive(keyboardProcReference); // GC does not touch any variables in this method until the method returns
-                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, keyboardProcReference, MainModuleHandle, 0);
+                IntPtr methodPtr = Marshal.GetFunctionPointerForDelegate(keyboardProcReference);
+                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_KEYBOARD_LL, methodPtr, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
                     throw new Exception("Failed to create LowLevelKeyboardHook");
@@ -915,7 +911,6 @@ namespace Yato.Input
             }
             // Unhook in the same thread
             PInvoke.UnhookWindowsHookEx(hookHandle);
-            gcHandle.Free();
         }
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -987,7 +982,6 @@ namespace Yato.Input
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
         private object lockObject;
         private PInvoke.HookProc mouseProcReference;
-        private GCHandle gcHandle;
         private IntPtr hookHandle;
         private uint hookThreadId;
         private Thread hookThread;
@@ -1056,13 +1050,9 @@ namespace Yato.Input
             lock (lockObject)
             {
                 hookThreadId = PInvoke.GetCurrentThreadId();
-                //You are missing the effect that using a debugger has on the lifetime of local variables.With a debugger attached, the jitter marks the variables in use until the end of the method.Important to make debugging reliable.This however also prevents the GC.Collect() call from collecting the delegate object.
-                //This code will crash when you run the Release build of your program without a debugger.
-                
                 mouseProcReference = new PInvoke.HookProc(HookProcedure);
-                gcHandle = GCHandle.Alloc(mouseProcReference);
-                GC.KeepAlive(mouseProcReference); // GC does not touch any variables in this method until the method returns
-                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, HookProcedure, MainModuleHandle, 0);
+                IntPtr methodPtr = Marshal.GetFunctionPointerForDelegate(mouseProcReference);
+                hookHandle = PInvoke.SetWindowsHookEx(PInvoke.WH_MOUSE_LL, methodPtr, MainModuleHandle, 0);
                 if (hookHandle == IntPtr.Zero)
                 {
                     throw new Exception("Failed to create LowLevelKeyboardHook");
@@ -1076,7 +1066,6 @@ namespace Yato.Input
             }
             // Unhook in the same thread
             PInvoke.UnhookWindowsHookEx(hookHandle);
-            gcHandle.Free();
         }
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -1259,7 +1248,7 @@ namespace Yato.Input
         public const uint WM_NCXBUTTONDOWN = 0x00AB;
         public const uint WM_NCXBUTTONUP = 0x00AC;
         public const uint WM_NCXBUTTONDBLCLK = 0x00AD;
-        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] HookProc hookProcedure, IntPtr hModule, uint threadId);
+        public delegate IntPtr SetWindowsHookEx_t(int type, IntPtr hookProcedure, IntPtr hModule, uint threadId);
         public static SetWindowsHookEx_t SetWindowsHookEx = WinApi.GetMethod<SetWindowsHookEx_t>("user32.dll", "SetWindowsHookExW");
         public delegate int UnhookWindowsHookEx_t(IntPtr hHook);
         public static UnhookWindowsHookEx_t UnhookWindowsHookEx = WinApi.GetMethod<UnhookWindowsHookEx_t>("user32.dll", "UnhookWindowsHookEx");

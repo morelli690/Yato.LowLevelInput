@@ -39,7 +39,7 @@ namespace Yato.Input
 
         public const uint WM_NCXBUTTONDBLCLK = 0x00AD;
 
-        public delegate IntPtr SetWindowsHookEx_t(int type, [MarshalAs(UnmanagedType.FunctionPtr)] HookProc hookProcedure, IntPtr hModule, uint threadId);
+        public delegate IntPtr SetWindowsHookEx_t(int type, IntPtr hookProcedure, IntPtr hModule, uint threadId);
         public static SetWindowsHookEx_t SetWindowsHookEx = WinApi.GetMethod<SetWindowsHookEx_t>("user32.dll", "SetWindowsHookExW");
 
         public delegate int UnhookWindowsHookEx_t(IntPtr hHook);
