@@ -6,6 +6,12 @@ namespace Yato.Input
 {
     public class InputHandler : IDisposable
     {
+#if DEBUG
+        private static bool DebugMode = true;
+#else
+        private static bool DebugMode = false;
+#endif
+
         private LowLevelKeyboardHook keyboardHook;
         private LowLevelMouseHook mouseHook;
 
@@ -15,6 +21,9 @@ namespace Yato.Input
         private object namedEventLock = new object();
         private List<VirtualKeyCode> namedEventList = new List<VirtualKeyCode>();
         private List<object> namedEventMonitor = new List<object>();
+
+        public object dictLock = new object();
+        public Dictionary<string, int> eventDictionary = new Dictionary<string, int>();
 
         public delegate void InputHandlerCallback(KeyState state, VirtualKeyCode key, int x, int y);
         public event InputHandlerCallback OnInputCaptured;
@@ -184,6 +193,8 @@ namespace Yato.Input
             keyboardHook.OnKeyCaptured += KeyboardHook_OnKeyCaptured;
             mouseHook.OnMouseCaptured += MouseHook_OnMouseCaptured;
 
+            if (DebugMode) return;
+
             keyboardHook.InstallHook();
             mouseHook.InstallHook();
         }
@@ -258,7 +269,7 @@ namespace Yato.Input
             OnInputCaptured?.Invoke(state, key, 0, 0);
         }
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool disposedValue = false;
 
         protected virtual void Dispose(bool disposing)
@@ -325,6 +336,6 @@ namespace Yato.Input
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        #endregion
+#endregion
     }
 }
