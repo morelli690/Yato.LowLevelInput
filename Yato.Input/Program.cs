@@ -26,37 +26,7 @@ namespace Yato.Input
                 Console.ReadLine();
             }
         }
-
-        private static void printItemDictionary()
-        {
-            Dictionary<string, int> stringToItem = new Dictionary<string, int>();
-            Dictionary<int, string> itemToString = new Dictionary<int, string>();
-
-            foreach(var value in Enum.GetValues(typeof(ItemDefinitionIndex)))
-            {
-                itemToString.Add((int)value, Enum.GetName(typeof(ItemDefinitionIndex), value));
-                stringToItem.Add(Enum.GetName(typeof(ItemDefinitionIndex), value), (int)value);
-            }
-
-            StringBuilder sb = new StringBuilder();
-
-            foreach(var pair in stringToItem)
-            {
-                sb.AppendLine("stringToItem.Add(\"" + pair.Key + "\", " + pair.Value.ToString() + ");");
-            }
-
-            sb.AppendLine();
-
-            foreach (var pair in itemToString)
-            {
-                sb.AppendLine("itemToString.Add(" + pair.Key.ToString() + ", \"" + pair.Value + "\");");
-            }
-
-            Console.WriteLine(sb.ToString());
-
-            Console.ReadLine();
-        }
-
+        
         private static void printKeyCodeArray()
         {
             List<string> nameList = new List<string>();
