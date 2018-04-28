@@ -202,7 +202,7 @@ namespace Yato.Input
                         OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
                         break;
                     case PInvoke.WM_XBUTTONDOWN:
-                        if(mouseData == 0x1)
+                        if(mouseData == 65536)
                         {
                             IsXButton1Pressed = true;
                             OnMouseCaptured?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
@@ -214,7 +214,7 @@ namespace Yato.Input
                         }
                         break;
                     case PInvoke.WM_XBUTTONUP:
-                        if(mouseData == 0x1)
+                        if(mouseData == 65536)
                         {
                             IsXButton1Pressed = false;
                             OnMouseCaptured?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
