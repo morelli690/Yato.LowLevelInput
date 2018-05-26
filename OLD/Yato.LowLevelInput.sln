@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yato.LowLevelInput", "Yato.LowLevelInput.csproj", "{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {09ABAA11-D6B0-4278-B862-C955925E0F09}
+	EndGlobalSection
+EndGlobal
