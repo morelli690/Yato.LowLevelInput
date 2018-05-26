@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BFA4D1B6-D3EF-42F7-8D8A-184FA1DDAE93}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Yato.Input</RootNamespace>
-    <AssemblyName>Yato.Input</AssemblyName>
+    <RootNamespace>Yato.LowLevelInput</RootNamespace>
+    <AssemblyName>Yato.LowLevelInput</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

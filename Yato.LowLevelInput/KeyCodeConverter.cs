@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
     // to cover better obfuscation
 

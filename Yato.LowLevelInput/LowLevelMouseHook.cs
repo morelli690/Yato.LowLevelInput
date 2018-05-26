@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Runtime.InteropServices;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
     public class LowLevelMouseHook : IDisposable
     {

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
     public class InputHandler : IDisposable
     {

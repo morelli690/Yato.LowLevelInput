@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
     internal static class PInvoke
     {

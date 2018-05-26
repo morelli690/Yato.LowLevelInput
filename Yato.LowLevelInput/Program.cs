@@ -5,11 +5,26 @@ using System.Text;
 using System.Threading;
 using System.Runtime.InteropServices;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Hook_OnKeyCaptured(KeyState state, VirtualKeyCode key)
+        {
+            Console.WriteLine(state.ToString() + "\t:\t" + key.ToString());
+        }
+
+        private static void Hook_OnMouseCaptured(KeyState state, VirtualKeyCode key, int x, int y)
+        {
+            Console.WriteLine(state + "\t:\t" + key + "\tX: " + x + " Y: " + y);
+        }
+
+        private static void Input_OnInputCaptured(KeyState state, VirtualKeyCode key, int x, int y)
+        {
+            Console.WriteLine(state + "\t:\t" + key + "\tX: " + x + " Y: " + y);
+        }
+
+        private static void Main(string[] args)
         {
             //printItemDictionary();
 
@@ -26,7 +41,7 @@ namespace Yato.Input
                 Console.ReadLine();
             }
         }
-        
+
         private static void printKeyCodeArray()
         {
             List<string> nameList = new List<string>();
@@ -67,21 +82,6 @@ namespace Yato.Input
             Console.WriteLine(sb.ToString());
 
             Console.ReadLine();
-        }
-
-        private static void Input_OnInputCaptured(KeyState state, VirtualKeyCode key, int x, int y)
-        {
-            Console.WriteLine(state + "\t:\t" + key + "\tX: " + x + " Y: " + y);
-        }
-
-        private static void Hook_OnMouseCaptured(KeyState state, VirtualKeyCode key, int x, int y)
-        {
-            Console.WriteLine(state + "\t:\t" + key + "\tX: " + x + " Y: " + y);
-        }
-
-        private static void Hook_OnKeyCaptured(KeyState state, VirtualKeyCode key)
-        {
-            Console.WriteLine(state.ToString() + "\t:\t" + key.ToString());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yato.Input
+namespace Yato.LowLevelInput
 {
     public enum KeyState : int
     {
