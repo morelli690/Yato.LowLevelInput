@@ -15,7 +15,7 @@ namespace Yato.LowLevelInput
         {
         }
 
-        private static void printKeyCodeArray()
+        private static void PrintKeyCodeArray()
         {
             List<string> nameList = new List<string>();
 
