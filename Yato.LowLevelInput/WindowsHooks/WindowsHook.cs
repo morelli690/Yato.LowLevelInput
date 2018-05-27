@@ -128,6 +128,7 @@ namespace Yato.LowLevelInput.WindowsHooks
             {
                 if (disposing)
                 {
+                    OnHookCalled = null;
                 }
 
                 UninstallHook();
