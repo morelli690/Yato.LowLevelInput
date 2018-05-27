@@ -10,8 +10,6 @@ namespace Yato.LowLevelInput.WindowsHooks
 {
     internal class WindowsHook : IDisposable
     {
-        private static int HookCounter = 0;
-        private static object lockHookCounter = new object();
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
         private IntPtr hookHandle;
