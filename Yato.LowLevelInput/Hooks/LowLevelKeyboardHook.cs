@@ -54,6 +54,11 @@ namespace Yato.LowLevelInput.Hooks
             }
         }
 
+        private void ProcessEvents_OnProcessExit(System.Diagnostics.Process process)
+        {
+            Dispose();
+        }
+
         public bool InstallHook()
         {
             lock (lockObject)
@@ -61,13 +66,15 @@ namespace Yato.LowLevelInput.Hooks
                 if (hook != null) return false;
 
                 hook = new WindowsHook(WindowsHookType.LowLevelKeyboard);
-
-                hook.OnHookCalled += Hook_OnHookCalled;
-
-                hook.InstallHook();
-
-                return true;
             }
+
+            hook.OnHookCalled += Hook_OnHookCalled;
+
+            hook.InstallHook();
+
+            ProcessEvents.OnProcessExit += ProcessEvents_OnProcessExit;
+
+            return true;
         }
 
         public bool UninstallHook()
@@ -75,6 +82,8 @@ namespace Yato.LowLevelInput.Hooks
             lock (lockObject)
             {
                 if (hook == null) return false;
+
+                ProcessEvents.OnProcessExit -= ProcessEvents_OnProcessExit;
 
                 hook.OnHookCalled -= Hook_OnHookCalled;
 
