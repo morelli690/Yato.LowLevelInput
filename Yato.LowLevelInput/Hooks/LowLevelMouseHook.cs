@@ -197,16 +197,8 @@ namespace Yato.LowLevelInput.Hooks
 
                 case WindowsMessage.WM_MOUSEWHEEL:
                 case WindowsMessage.WM_MOUSEHWHEEL:
-                    if (Math.Abs(HIWORD(mouseData)) == 120)
-                    {
-                        IsMiddleMouseButtonPressed = true;
+                    OnMouseEvent?.Invoke(KeyState.None, VirtualKeyCode.SCROLL, HIWORD(mouseData), HIWORD(mouseData));
 
-                        OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
-                    }
-                    else
-                    {
-                        OnMouseEvent?.Invoke(KeyState.None, VirtualKeyCode.SCROLL, HIWORD(mouseData), HIWORD(mouseData));
-                    }
                     break;
 
                 case WindowsMessage.WM_MOUSEMOVE:

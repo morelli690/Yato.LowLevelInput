@@ -10,6 +10,8 @@ namespace Yato.LowLevelInput.WindowsHooks
 {
     internal class WindowsHook : IDisposable
     {
+        private static int HookCounter = 0;
+        private static object lockHookCounter = new object();
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
         private IntPtr hookHandle;
@@ -80,9 +82,19 @@ namespace Yato.LowLevelInput.WindowsHooks
                 if (hookHandle != IntPtr.Zero) return false;
                 if (hookThreadId != 0) return false;
 
+                //int currentCounter = 0;
+
+                //lock (lockHookCounter)
+                //{
+                //    HookCounter++;
+
+                //    currentCounter = HookCounter;
+                //}
+
                 hookThread = new Thread(InitializeHookThread)
                 {
-                    IsBackground = true
+                    IsBackground = true,
+                    //Name = "WindowsHook #" + HookCounter.ToString()
                 };
 
                 hookThread.Start();
