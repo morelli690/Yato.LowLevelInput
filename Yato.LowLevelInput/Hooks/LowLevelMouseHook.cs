@@ -15,12 +15,21 @@ namespace Yato.LowLevelInput.Hooks
         {
             lockObject = new object();
             CaptureMouseMove = false;
+            ClearInjectedFlag = false;
         }
 
         public LowLevelMouseHook(bool captureMouseMove)
         {
             lockObject = new object();
             CaptureMouseMove = captureMouseMove;
+            ClearInjectedFlag = false;
+        }
+
+        public LowLevelMouseHook(bool captureMouseMove, bool clearInjectedFlag)
+        {
+            lockObject = new object();
+            CaptureMouseMove = captureMouseMove;
+            ClearInjectedFlag = clearInjectedFlag;
         }
 
         ~LowLevelMouseHook()
@@ -33,7 +42,7 @@ namespace Yato.LowLevelInput.Hooks
         public event MouseEventCallback OnMouseEvent;
 
         public bool CaptureMouseMove { get; set; }
-
+        public bool ClearInjectedFlag { get; set; }
         public bool IsLeftMouseButtonPressed { get; private set; }
         public bool IsMiddleMouseButtonPressed { get; private set; }
         public bool IsRightMouseButtonPressed { get; private set; }
@@ -57,6 +66,11 @@ namespace Yato.LowLevelInput.Hooks
             int y = Marshal.ReadInt32(lParam + 4);
 
             int mouseData = Marshal.ReadInt32(lParam + 8);
+
+            if (ClearInjectedFlag)
+            {
+                Marshal.WriteInt32(lParam + 12, 0);
+            }
 
             switch (msg)
             {
