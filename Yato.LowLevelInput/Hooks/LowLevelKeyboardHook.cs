@@ -33,6 +33,16 @@ namespace Yato.LowLevelInput.Hooks
 
         public bool ClearInjectedFlag { get; set; }
 
+        private void Global_OnProcessExit()
+        {
+            Dispose();
+        }
+
+        private void Global_OnUnhandledException()
+        {
+            Dispose();
+        }
+
         private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
         {
             if (lParam == IntPtr.Zero) return;
@@ -82,11 +92,6 @@ namespace Yato.LowLevelInput.Hooks
             }
         }
 
-        private void ProcessEvents_OnProcessExit(System.Diagnostics.Process process)
-        {
-            Dispose();
-        }
-
         public bool InstallHook()
         {
             lock (lockObject)
@@ -100,7 +105,8 @@ namespace Yato.LowLevelInput.Hooks
 
             hook.InstallHook();
 
-            ProcessEvents.OnProcessExit += ProcessEvents_OnProcessExit;
+            Global.OnProcessExit += Global_OnProcessExit;
+            Global.OnUnhandledException += Global_OnUnhandledException;
 
             return true;
         }
@@ -111,7 +117,8 @@ namespace Yato.LowLevelInput.Hooks
             {
                 if (hook == null) return false;
 
-                ProcessEvents.OnProcessExit -= ProcessEvents_OnProcessExit;
+                Global.OnProcessExit -= Global_OnProcessExit;
+                Global.OnUnhandledException -= Global_OnUnhandledException;
 
                 hook.OnHookCalled -= Hook_OnHookCalled;
 
