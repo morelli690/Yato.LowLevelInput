@@ -14,6 +14,13 @@ namespace Yato.LowLevelInput.Hooks
         public LowLevelMouseHook()
         {
             lockObject = new object();
+            CaptureMouseMove = false;
+        }
+
+        public LowLevelMouseHook(bool captureMouseMove)
+        {
+            lockObject = new object();
+            CaptureMouseMove = captureMouseMove;
         }
 
         ~LowLevelMouseHook()
@@ -21,35 +28,41 @@ namespace Yato.LowLevelInput.Hooks
             Dispose(false);
         }
 
-        public delegate void MouseEventCallback(KeyState state, VirtualKeyCode key);
+        public delegate void MouseEventCallback(KeyState state, VirtualKeyCode key, int x, int y);
 
         public event MouseEventCallback OnMouseEvent;
+
+        public bool CaptureMouseMove { get; set; }
+
+        public bool IsLeftMouseButtonPressed { get; set; }
+        public bool IsMiddleMouseButtonPressed { get; set; }
+        public bool IsRightMouseButtonPressed { get; set; }
+        public bool IsXButton1Pressed { get; set; }
+        public bool IsXButton2Pressed { get; set; }
 
         private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
         {
             if (lParam == IntPtr.Zero) return;
-            if (OnMouseEvent == null) return;
+
+            IsMiddleMouseButtonPressed = false; // important to reset here
 
             WindowsMessage msg = (WindowsMessage)((uint)wParam.ToInt32());
 
-            VirtualKeyCode key = (VirtualKeyCode)Marshal.ReadInt32(lParam);
+            int x = Marshal.ReadInt32(lParam);
+            int y = Marshal.ReadInt32(lParam + 4);
+
+            int mouseData = Marshal.ReadInt32(lParam + 8);
 
             switch (msg)
             {
-                case WindowsMessage.WM_KEYDOWN:
-                    OnMouseEvent?.Invoke(KeyState.Down, key);
+                case WindowsMessage.WM_LBUTTONDOWN:
                     break;
 
-                case WindowsMessage.WM_KEYUP:
-                    OnMouseEvent?.Invoke(KeyState.Up, key);
+                case WindowsMessage.WM_LBUTTONUP:
                     break;
 
-                case WindowsMessage.WM_SYSKEYDOWN:
-                    OnMouseEvent?.Invoke(KeyState.Down, key);
-                    break;
-
-                case WindowsMessage.WM_SYSKEYUP:
-                    OnMouseEvent?.Invoke(KeyState.Up, key);
+                case WindowsMessage.WM_MBUTTONDOWN:
+                case WindowsMessage.WM_MBUTTONDBLCLK:
                     break;
             }
         }
