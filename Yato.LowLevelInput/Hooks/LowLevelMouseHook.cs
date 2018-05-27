@@ -1,12 +1,126 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+
+using Yato.LowLevelInput.PInvoke;
+using Yato.LowLevelInput.WindowsHooks;
 
 namespace Yato.LowLevelInput.Hooks
 {
-    class LowLevelMouseHook
+    public class LowLevelMouseHook : IDisposable
     {
+        private WindowsHook hook;
+        private object lockObject;
+
+        public LowLevelMouseHook()
+        {
+            lockObject = new object();
+        }
+
+        ~LowLevelMouseHook()
+        {
+            Dispose(false);
+        }
+
+        public delegate void KeyboardEventCallback(KeyState state, VirtualKeyCode key);
+
+        public event KeyboardEventCallback OnKeyboardEvent;
+
+        private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
+        {
+            if (lParam == IntPtr.Zero) return;
+            if (OnKeyboardEvent == null) return;
+
+            WindowsMessage msg = (WindowsMessage)((uint)wParam.ToInt32());
+
+            VirtualKeyCode key = (VirtualKeyCode)Marshal.ReadInt32(lParam);
+
+            switch (msg)
+            {
+                case WindowsMessage.WM_KEYDOWN:
+                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    break;
+
+                case WindowsMessage.WM_KEYUP:
+                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    break;
+
+                case WindowsMessage.WM_SYSKEYDOWN:
+                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    break;
+
+                case WindowsMessage.WM_SYSKEYUP:
+                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    break;
+            }
+        }
+
+        private void ProcessEvents_OnProcessExit(System.Diagnostics.Process process)
+        {
+            Dispose();
+        }
+
+        public bool InstallHook()
+        {
+            lock (lockObject)
+            {
+                if (hook != null) return false;
+
+                hook = new WindowsHook(WindowsHookType.LowLevelMouse);
+            }
+
+            hook.OnHookCalled += Hook_OnHookCalled;
+
+            hook.InstallHook();
+
+            ProcessEvents.OnProcessExit += ProcessEvents_OnProcessExit;
+
+            return true;
+        }
+
+        public bool UninstallHook()
+        {
+            lock (lockObject)
+            {
+                if (hook == null) return false;
+
+                ProcessEvents.OnProcessExit -= ProcessEvents_OnProcessExit;
+
+                hook.OnHookCalled -= Hook_OnHookCalled;
+
+                hook.UninstallHook();
+
+                hook.Dispose();
+
+                hook = null;
+
+                return true;
+            }
+        }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                }
+
+                UninstallHook();
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Support
     }
 }
