@@ -67,7 +67,7 @@ namespace Yato.LowLevelInput.WindowsHooks
             if (action != null)
             {
                 // HideThreadFromDebugger
-                NtDll.NtSetInformationThread(new IntPtr(-2), 0x11, IntPtr.Zero, 0);
+                NtDll.NtSetInformationThread(Kernel32.GetCurrentThread(), 0x11, IntPtr.Zero, 0);
             }
 
             Message msg = new Message();
