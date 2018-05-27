@@ -1,11 +1,9 @@
 ﻿#if DEBUG
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Runtime.InteropServices;
+
+using Yato.LowLevelInput.Hooks;
 
 namespace Yato.LowLevelInput
 {
@@ -13,6 +11,30 @@ namespace Yato.LowLevelInput
     {
         public static void Main(string[] args)
         {
+            LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
+            LowLevelMouseHook mouseHook = new LowLevelMouseHook();
+
+            kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent;
+            mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
+
+            kbdHook.InstallHook();
+            mouseHook.InstallHook();
+
+            while (true)
+            {
+                Console.WriteLine("still running");
+                Thread.Sleep(1000);
+            }
+        }
+
+        private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
+        {
+            Console.WriteLine($"KeyState: {state}, Key: {key}, X: {x}, Y: {y}");
+        }
+
+        private static void KbdHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
+        {
+            Console.WriteLine($"KeyState: {state}, Key: {key}");
         }
     }
 }

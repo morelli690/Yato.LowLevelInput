@@ -12,7 +12,6 @@ namespace Yato.LowLevelInput.WindowsHooks
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
-        private Action action;
         private IntPtr hookHandle;
         private User32.HookProc hookProc;
         private Thread hookThread;
@@ -64,12 +63,6 @@ namespace Yato.LowLevelInput.WindowsHooks
                 hookHandle = User32.SetWindowsHookEx((int)WindowsHookType, methodPtr, MainModuleHandle, 0);
             }
 
-            if (action != null)
-            {
-                // HideThreadFromDebugger
-                NtDll.NtSetInformationThread(Kernel32.GetCurrentThread(), 0x11, IntPtr.Zero, 0);
-            }
-
             Message msg = new Message();
 
             while (User32.GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
@@ -87,26 +80,12 @@ namespace Yato.LowLevelInput.WindowsHooks
                 if (hookHandle != IntPtr.Zero) return false;
                 if (hookThreadId != 0) return false;
 
-                if (Library.DebugMode)
+                hookThread = new Thread(InitializeHookThread)
                 {
-                    hookThread = new Thread(InitializeHookThread)
-                    {
-                        IsBackground = true
-                    };
+                    IsBackground = true
+                };
 
-                    hookThread.Start();
-                }
-                else
-                {
-                    action = new Action(InitializeHookThread);
-
-                    RuntimeHelpers.PrepareDelegate(action);
-
-                    IntPtr startAddress = Marshal.GetFunctionPointerForDelegate(action);
-                    uint uselessThreadId = 0;
-
-                    Kernel32.CreateThread(IntPtr.Zero, IntPtr.Zero, startAddress, IntPtr.Zero, 0, ref uselessThreadId);
-                }
+                hookThread.Start();
 
                 return true;
             }
@@ -133,7 +112,6 @@ namespace Yato.LowLevelInput.WindowsHooks
                 hookHandle = IntPtr.Zero;
                 hookThreadId = 0;
                 hookThread = null;
-                action = null;
 
                 return true;
             }
