@@ -4,7 +4,6 @@ using System.Threading;
 using System.Runtime.InteropServices;
 
 using Yato.LowLevelInput.PInvoke;
-using System.Runtime.CompilerServices;
 
 namespace Yato.LowLevelInput.WindowsHooks
 {
