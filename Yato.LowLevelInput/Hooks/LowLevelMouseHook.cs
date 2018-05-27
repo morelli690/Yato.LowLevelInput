@@ -21,9 +21,9 @@ namespace Yato.LowLevelInput.Hooks
             Dispose(false);
         }
 
-        public delegate void KeyboardEventCallback(KeyState state, VirtualKeyCode key);
+        public delegate void MouseEventCallback(KeyState state, VirtualKeyCode key);
 
-        public event KeyboardEventCallback OnKeyboardEvent;
+        public event MouseEventCallback OnMouseEvent;
 
         private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
         {
