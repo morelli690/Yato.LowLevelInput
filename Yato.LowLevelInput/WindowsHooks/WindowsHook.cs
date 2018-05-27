@@ -66,7 +66,7 @@ namespace Yato.LowLevelInput.WindowsHooks
 
             while (User32.GetMessage(ref msg, IntPtr.Zero, 0, 0) != 0)
             {
-                if (msg.Msg == Constant.WM_QUIT) break;
+                if (msg.Msg == (uint)WindowsMessage.WM_QUIT) break;
             }
 
             User32.UnhookWindowsHookEx(hookHandle);
@@ -99,7 +99,7 @@ namespace Yato.LowLevelInput.WindowsHooks
                 if (hookThreadId == 0) return false;
                 if (hookThread == null) return false;
 
-                if (User32.PostThreadMessage(hookThreadId, Constant.WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
+                if (User32.PostThreadMessage(hookThreadId, (uint)WindowsMessage.WM_QUIT, IntPtr.Zero, IntPtr.Zero) != 0)
                 {
                     try
                     {
