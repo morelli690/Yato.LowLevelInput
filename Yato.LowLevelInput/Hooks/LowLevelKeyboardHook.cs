@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Runtime.InteropServices;
 
 using Yato.LowLevelInput.PInvoke;
