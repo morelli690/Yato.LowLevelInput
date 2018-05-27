@@ -15,6 +15,8 @@ namespace Yato.LowLevelInput.WindowsHooks
         Mouse = 7,
         Debug = 9,
         Shell = 10,
+        ForegroundIdle = 11,
+        CallWndProcRet = 12,
         LowLevelKeyboard = 13,
         LowLevelMouse = 14,
     }
