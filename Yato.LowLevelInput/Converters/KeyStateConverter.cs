@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Yato.LowLevelInput.Hooks;
+
 namespace Yato.LowLevelInput.Converters
 {
     public static class KeyStateConverter
