@@ -88,65 +88,65 @@ namespace Yato.LowLevelInput.Hooks
                 case WindowsMessage.WM_NCLBUTTONDBLCLK:
                     IsLeftMouseButtonPressed = true;
 
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
 
                     IsLeftMouseButtonPressed = false;
 
-                    OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_LBUTTONDOWN:
                 case WindowsMessage.WM_NCLBUTTONDOWN:
                     IsLeftMouseButtonPressed = true;
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.LBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_LBUTTONUP:
                 case WindowsMessage.WM_NCLBUTTONUP:
                     IsLeftMouseButtonPressed = false;
-                    OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.LBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_MBUTTONDOWN:
                 case WindowsMessage.WM_NCMBUTTONDOWN:
                     IsMiddleMouseButtonPressed = true;
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_MBUTTONDBLCLK:
                 case WindowsMessage.WM_NCMBUTTONDBLCLK:
                     IsMiddleMouseButtonPressed = true;
 
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
 
                     IsMiddleMouseButtonPressed = false;
 
-                    OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.MBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.MBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_RBUTTONDBLCLK:
                 case WindowsMessage.WM_NCRBUTTONDBLCLK:
                     IsRightMouseButtonPressed = true;
 
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
 
                     IsRightMouseButtonPressed = false;
 
-                    OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_RBUTTONDOWN:
                 case WindowsMessage.WM_NCRBUTTONDOWN:
                     IsRightMouseButtonPressed = true;
 
-                    OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Down, VirtualKeyCode.RBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_RBUTTONUP:
                 case WindowsMessage.WM_NCRBUTTONUP:
                     IsRightMouseButtonPressed = false;
 
-                    OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.RBUTTON, x, y);
                     break;
 
                 case WindowsMessage.WM_XBUTTONDBLCLK:
@@ -155,21 +155,21 @@ namespace Yato.LowLevelInput.Hooks
                     {
                         IsXButton1Pressed = true;
 
-                        OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
+                        InvokeEventListeners(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
 
                         IsXButton1Pressed = false;
 
-                        OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
+                        InvokeEventListeners(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
                     }
                     else
                     {
                         IsXButton2Pressed = true;
 
-                        OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
+                        InvokeEventListeners(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
 
                         IsXButton2Pressed = false;
 
-                        OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
+                        InvokeEventListeners(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
                     }
                     break;
 
@@ -179,13 +179,13 @@ namespace Yato.LowLevelInput.Hooks
                     {
                         IsXButton1Pressed = true;
 
-                        OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
+                        InvokeEventListeners(KeyState.Down, VirtualKeyCode.XBUTTON1, x, y);
                     }
                     else
                     {
                         IsXButton2Pressed = true;
 
-                        OnMouseEvent?.Invoke(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
+                        InvokeEventListeners(KeyState.Down, VirtualKeyCode.XBUTTON2, x, y);
                     }
                     break;
 
@@ -195,19 +195,19 @@ namespace Yato.LowLevelInput.Hooks
                     {
                         IsXButton1Pressed = false;
 
-                        OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
+                        InvokeEventListeners(KeyState.Up, VirtualKeyCode.XBUTTON1, x, y);
                     }
                     else
                     {
                         IsXButton2Pressed = false;
 
-                        OnMouseEvent?.Invoke(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
+                        InvokeEventListeners(KeyState.Up, VirtualKeyCode.XBUTTON2, x, y);
                     }
                     break;
 
                 case WindowsMessage.WM_MOUSEWHEEL:
                 case WindowsMessage.WM_MOUSEHWHEEL:
-                    OnMouseEvent?.Invoke(KeyState.None, VirtualKeyCode.SCROLL, HIWORD(mouseData), HIWORD(mouseData));
+                    InvokeEventListeners(KeyState.None, VirtualKeyCode.SCROLL, HIWORD(mouseData), HIWORD(mouseData));
 
                     break;
 
@@ -215,10 +215,18 @@ namespace Yato.LowLevelInput.Hooks
                 case WindowsMessage.WM_NCMOUSEMOVE:
                     if (CaptureMouseMove)
                     {
-                        OnMouseEvent?.Invoke(KeyState.None, VirtualKeyCode.INVALID, x, y);
+                        InvokeEventListeners(KeyState.None, VirtualKeyCode.INVALID, x, y);
                     }
                     break;
             }
+        }
+
+        private void InvokeEventListeners(KeyState state, VirtualKeyCode key, int x, int y)
+        {
+            Global.StartNewTask(() =>
+            {
+                OnMouseEvent?.Invoke(state, key, x, y);
+            });
         }
 
         public bool InstallHook()

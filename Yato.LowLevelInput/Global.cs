@@ -6,11 +6,15 @@ namespace Yato.LowLevelInput
 {
     internal static class Global
     {
+        private static TaskFactory libraryTaskFactory;
+
         static Global()
         {
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            libraryTaskFactory = new TaskFactory(TaskCreationOptions.None, TaskContinuationOptions.None);
         }
 
         public delegate void ProcessExitCallback();
@@ -29,6 +33,11 @@ namespace Yato.LowLevelInput
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             OnUnhandledException?.Invoke();
+        }
+
+        public static void StartNewTask(Action action)
+        {
+            libraryTaskFactory.StartNew(action);
         }
     }
 }

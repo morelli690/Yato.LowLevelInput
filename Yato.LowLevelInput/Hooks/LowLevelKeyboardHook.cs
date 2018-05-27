@@ -75,21 +75,29 @@ namespace Yato.LowLevelInput.Hooks
             switch (msg)
             {
                 case WindowsMessage.WM_KEYDOWN:
-                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    InvokeEventListeners(KeyState.Down, key);
                     break;
 
                 case WindowsMessage.WM_KEYUP:
-                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    InvokeEventListeners(KeyState.Up, key);
                     break;
 
                 case WindowsMessage.WM_SYSKEYDOWN:
-                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    InvokeEventListeners(KeyState.Down, key);
                     break;
 
                 case WindowsMessage.WM_SYSKEYUP:
-                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    InvokeEventListeners(KeyState.Up, key);
                     break;
             }
+        }
+
+        private void InvokeEventListeners(KeyState state, VirtualKeyCode key)
+        {
+            Global.StartNewTask(() =>
+            {
+                OnKeyboardEvent?.Invoke(state, key);
+            });
         }
 
         public bool InstallHook()
