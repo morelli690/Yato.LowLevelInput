@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 
 using Yato.LowLevelInput.PInvoke;
@@ -16,6 +17,11 @@ namespace Yato.LowLevelInput.Hooks
             lockObject = new object();
         }
 
+        public LowLevelKeyboardHook(bool clearInjectedFlag)
+        {
+            ClearInjectedFlag = clearInjectedFlag;
+        }
+
         ~LowLevelKeyboardHook()
         {
             Dispose(false);
@@ -25,9 +31,31 @@ namespace Yato.LowLevelInput.Hooks
 
         public event KeyboardEventCallback OnKeyboardEvent;
 
+        public bool ClearInjectedFlag { get; set; }
+
         private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
         {
             if (lParam == IntPtr.Zero) return;
+
+            if (ClearInjectedFlag)
+            {
+                int flags = Marshal.ReadInt32(lParam + 8);
+
+                BitArray bits = new BitArray(BitConverter.GetBytes(flags));
+
+                if (bits.Get(1) || bits.Get(4))
+                {
+                    bits.Set(1, false);
+                    bits.Set(4, false);
+
+                    int[] modifiedBits = new int[1];
+
+                    bits.CopyTo(modifiedBits, 0);
+
+                    Marshal.WriteInt32(lParam + 8, modifiedBits[0]);
+                }
+            }
+
             if (OnKeyboardEvent == null) return;
 
             WindowsMessage msg = (WindowsMessage)((uint)wParam.ToInt32());
