@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Yato.LowLevelInput
+namespace Yato.LowLevelInput.WindowsHooks
 {
-    public enum WindowsHookType
+    internal enum WindowsHookType
     {
         MsgFilter = -1,
         JournalRecord = 0,

@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 
 using Yato.LowLevelInput.PInvoke;
 
-namespace Yato.LowLevelInput
+namespace Yato.LowLevelInput.WindowsHooks
 {
-    public class WindowsHook : IDisposable
+    internal class WindowsHook : IDisposable
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
