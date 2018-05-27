@@ -82,19 +82,9 @@ namespace Yato.LowLevelInput.WindowsHooks
                 if (hookHandle != IntPtr.Zero) return false;
                 if (hookThreadId != 0) return false;
 
-                //int currentCounter = 0;
-
-                //lock (lockHookCounter)
-                //{
-                //    HookCounter++;
-
-                //    currentCounter = HookCounter;
-                //}
-
                 hookThread = new Thread(InitializeHookThread)
                 {
-                    IsBackground = true,
-                    //Name = "WindowsHook #" + HookCounter.ToString()
+                    IsBackground = true
                 };
 
                 hookThread.Start();
