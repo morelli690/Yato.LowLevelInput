@@ -1,17 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Yato.LowLevelInput
+namespace Yato.LowLevelInput.Converters
 {
     public static class KeyCodeConverter
     {
-        private static string[] stateStrings = new string[]
-        {
-            "None",
-            "Up",
-            "Down"
-        };
-
-        private static string[] vkStrings = new string[]
+        private static string[] keyCodeMap = new string[]
                 {
             "HOTKEY",
             "LBUTTON",
@@ -270,66 +264,56 @@ namespace Yato.LowLevelInput
             "OEM_CLEAR",
         };
 
-        public static KeyState ToKeyState(string name)
+        public static IEnumerable<KeyValuePair<VirtualKeyCode, string>> EnumerateVirtualKeyCodes()
         {
-            for (int i = 0; i < stateStrings.Length; i++)
+            for (int i = 0; i < keyCodeMap.Length; i++)
             {
-                if (stateStrings[i] == name) return (KeyState)i;
+                if (string.IsNullOrEmpty(keyCodeMap[i])) continue;
+                if (string.IsNullOrWhiteSpace(keyCodeMap[i])) continue;
+
+                yield return new KeyValuePair<VirtualKeyCode, string>((VirtualKeyCode)i, keyCodeMap[i]);
             }
-
-            return KeyState.None;
         }
 
-        public static KeyState ToKeyState(int index)
+        public static string ToString(VirtualKeyCode code)
         {
-            return (KeyState)index;
-        }
-
-        public static string ToString(VirtualKeyCode key)
-        {
-            int index = (int)key;
+            int index = (int)code;
 
             if (index < 0) return string.Empty;
+            if (index >= keyCodeMap.Length) return string.Empty;
 
-            if (index >= vkStrings.Length) return string.Empty;
-
-            return vkStrings[index];
+            return keyCodeMap[index];
         }
 
         public static string ToString(int index)
         {
             if (index < 0) return string.Empty;
+            if (index >= keyCodeMap.Length) return string.Empty;
 
-            if (index >= vkStrings.Length) return string.Empty;
-
-            return vkStrings[index];
-        }
-
-        public static string ToString(KeyState state)
-        {
-            int index = (int)state;
-
-            if (index < 0) return string.Empty;
-            if (index >= stateStrings.Length) return string.Empty;
-
-            return stateStrings[index];
+            return keyCodeMap[index];
         }
 
         public static VirtualKeyCode ToVirtualKeyCode(string name)
         {
-            name = name.ToUpper();
+            if (string.IsNullOrEmpty(name)) return VirtualKeyCode.INVALID;
+            if (string.IsNullOrWhiteSpace(name)) return VirtualKeyCode.INVALID;
 
-            for (int i = 0; i < vkStrings.Length; i++)
+            string tmp = name.ToUpper();
+
+            for (int i = 0; i < keyCodeMap.Length; i++)
             {
-                if (vkStrings[i] == name) return (VirtualKeyCode)i;
+                if (tmp == keyCodeMap[i]) return (VirtualKeyCode)i;
             }
 
-            return VirtualKeyCode.NONAME;
+            return VirtualKeyCode.INVALID;
         }
 
-        public static VirtualKeyCode ToVirtualKeyCode(int vk)
+        public static VirtualKeyCode ToVirtualKeyCode(int code)
         {
-            return (VirtualKeyCode)vk;
+            if (code < 0) return VirtualKeyCode.INVALID;
+            if (code >= keyCodeMap.Length) return VirtualKeyCode.INVALID;
+
+            return (VirtualKeyCode)code;
         }
     }
 }
