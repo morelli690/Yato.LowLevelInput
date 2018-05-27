@@ -28,7 +28,7 @@ namespace Yato.LowLevelInput.Hooks
         private void Hook_OnHookCalled(IntPtr wParam, IntPtr lParam)
         {
             if (lParam == IntPtr.Zero) return;
-            if (OnKeyboardEvent == null) return;
+            if (OnMouseEvent == null) return;
 
             WindowsMessage msg = (WindowsMessage)((uint)wParam.ToInt32());
 
@@ -37,19 +37,19 @@ namespace Yato.LowLevelInput.Hooks
             switch (msg)
             {
                 case WindowsMessage.WM_KEYDOWN:
-                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    OnMouseEvent?.Invoke(KeyState.Down, key);
                     break;
 
                 case WindowsMessage.WM_KEYUP:
-                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    OnMouseEvent?.Invoke(KeyState.Up, key);
                     break;
 
                 case WindowsMessage.WM_SYSKEYDOWN:
-                    OnKeyboardEvent?.Invoke(KeyState.Down, key);
+                    OnMouseEvent?.Invoke(KeyState.Down, key);
                     break;
 
                 case WindowsMessage.WM_SYSKEYUP:
-                    OnKeyboardEvent?.Invoke(KeyState.Up, key);
+                    OnMouseEvent?.Invoke(KeyState.Up, key);
                     break;
             }
         }
