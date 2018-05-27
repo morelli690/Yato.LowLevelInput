@@ -49,6 +49,7 @@
     <Compile Include="Converters\KeyStateConverter.cs" />
     <Compile Include="Hooks\LowLevelKeyboardHook.cs" />
     <Compile Include="Hooks\LowLevelMouseHook.cs" />
+    <Compile Include="ProcessEvents.cs" />
     <Compile Include="WindowsHooks\WindowsHook.cs" />
     <Compile Include="Hooks\KeyState.cs" />
     <Compile Include="Library.cs" />
