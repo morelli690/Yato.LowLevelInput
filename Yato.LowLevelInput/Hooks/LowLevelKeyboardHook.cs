@@ -19,6 +19,7 @@ namespace Yato.LowLevelInput.Hooks
 
         public LowLevelKeyboardHook(bool clearInjectedFlag)
         {
+            lockObject = new object();
             ClearInjectedFlag = clearInjectedFlag;
         }
 
