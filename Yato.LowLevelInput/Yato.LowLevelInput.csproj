@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallbackContainer.cs" />
     <Compile Include="Converters\KeyCodeConverter.cs" />
     <Compile Include="Converters\KeyStateConverter.cs" />
     <Compile Include="Global.cs" />

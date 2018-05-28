@@ -15,7 +15,9 @@ namespace Yato.LowLevelInput
 
         private Dictionary<VirtualKeyCode, bool> mapIsPressed;
 
-        private delegate void KeyStateChanged(KeyState state, VirtualKeyCode keyCode);
+        private Dictionary<VirtualKeyCode, CallbackContainer> singleKeyCallback;
+
+        public delegate void KeyStateChangedCallback(KeyState state, VirtualKeyCode keyCode);
 
         public event LowLevelKeyboardHook.KeyboardEventCallback OnKeyboardEvent;
 
@@ -83,6 +85,8 @@ namespace Yato.LowLevelInput
                 mapIsPressed.Add(pair.Key, false);
             }
 
+            singleKeyCallback = new Dictionary<VirtualKeyCode, CallbackContainer>();
+
             // initialize hooks
             keyboardHook = new LowLevelKeyboardHook(clearInjectedFlag);
             mouseHook = new LowLevelMouseHook(captureMouseMove, clearInjectedFlag);
@@ -108,6 +112,16 @@ namespace Yato.LowLevelInput
             {
                 mapIsPressed[key] = state == KeyState.Down ? true : false;
             }
+
+            var currentKeyCallbackDict = singleKeyCallback;
+
+            if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
+            {
+                if (currentKeyCallbackDict.ContainsKey(key))
+                {
+                    currentKeyCallbackDict[key].Invoke(state, key);
+                }
+            }
         }
 
         private void KeyboardHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
@@ -124,6 +138,16 @@ namespace Yato.LowLevelInput
             {
                 mapIsPressed[key] = state == KeyState.Down ? true : false;
             }
+
+            var currentKeyCallbackDict = singleKeyCallback;
+
+            if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
+            {
+                if (currentKeyCallbackDict.ContainsKey(key))
+                {
+                    currentKeyCallbackDict[key].Invoke(state, key);
+                }
+            }
         }
 
         public bool IsPressed(VirtualKeyCode key)
@@ -131,6 +155,33 @@ namespace Yato.LowLevelInput
             if (!mapIsPressed.ContainsKey(key)) return false;
 
             return mapIsPressed[key];
+        }
+
+        public bool RegisterEvent(VirtualKeyCode key, KeyStateChangedCallback callback)
+        {
+            if (key == VirtualKeyCode.INVALID) return false;
+            if (callback == null) return false;
+
+            lock (lockObject)
+            {
+                if (!singleKeyCallback.ContainsKey(key)) singleKeyCallback.Add(key, new CallbackContainer());
+            }
+
+            singleKeyCallback[key].Add(callback);
+
+            return true;
+        }
+
+        public bool RemoveEvent(VirtualKeyCode key, KeyStateChangedCallback callback)
+        {
+            if (key == VirtualKeyCode.INVALID) return false;
+            if (callback == null) return false;
+
+            if (!singleKeyCallback.ContainsKey(key)) return false;
+
+            singleKeyCallback[key].Remove(callback);
+
+            return false;
         }
 
         #region IDisposable Support
@@ -147,6 +198,7 @@ namespace Yato.LowLevelInput
                     if (mouseHook != null) mouseHook.Dispose();
 
                     mapIsPressed = null;
+                    singleKeyCallback = null;
                 }
 
                 disposedValue = true;
