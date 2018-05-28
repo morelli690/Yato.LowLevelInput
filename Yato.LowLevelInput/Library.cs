@@ -13,8 +13,6 @@ namespace Yato.LowLevelInput
             }
         }
 
-        public static bool DebugMode { get; set; }
-
         public static string Name
         {
             get
