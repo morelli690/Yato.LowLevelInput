@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 
 using Yato.LowLevelInput.Converters;
@@ -78,6 +79,8 @@ namespace Yato.LowLevelInput
         private void Initialize(bool captureMouseMove, bool clearInjectedFlag)
         {
             // initialize vars
+            lockObject = new object();
+
             mapIsPressed = new Dictionary<VirtualKeyCode, bool>();
 
             foreach (var pair in KeyCodeConverter.EnumerateVirtualKeyCodes())
@@ -182,6 +185,37 @@ namespace Yato.LowLevelInput
             singleKeyCallback[key].Remove(callback);
 
             return false;
+        }
+
+        public bool WaitForKeyState(VirtualKeyCode key, KeyState state = KeyState.Down)
+        {
+            if (key == VirtualKeyCode.INVALID) return false;
+            if (state == KeyState.None) return false;
+
+            object threadLock = new object();
+
+            KeyStateChangedCallback callback = (KeyState keystate, VirtualKeyCode keycode) =>
+            {
+                if (keystate != state) return;
+                if (keycode != key) return;
+
+                if (Monitor.TryEnter(threadLock))
+                {
+                    // someone else has the lock
+                    Monitor.PulseAll(threadLock);
+                    Monitor.Exit(threadLock);
+                }
+            };
+
+            if (!RegisterEvent(key, callback)) return false;
+
+            Monitor.Enter(threadLock);
+            Monitor.Wait(threadLock);
+            Monitor.Exit(threadLock);
+
+            RemoveEvent(key, callback);
+
+            return true;
         }
 
         #region IDisposable Support
