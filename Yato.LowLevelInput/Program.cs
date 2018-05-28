@@ -20,11 +20,7 @@ namespace Yato.LowLevelInput
             kbdHook.InstallHook();
             mouseHook.InstallHook();
 
-            while (true)
-            {
-                Console.WriteLine("still running");
-                Thread.Sleep(1000);
-            }
+            Console.ReadLine();
         }
 
         private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
