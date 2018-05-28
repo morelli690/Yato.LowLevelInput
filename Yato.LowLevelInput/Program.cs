@@ -15,7 +15,7 @@ namespace Yato.LowLevelInput
 
             manager.RegisterEvent(VirtualKeyCode.LCONTROL, Callback);
 
-            manager.WaitForKeyState(VirtualKeyCode.B);
+            manager.WaitForKeyEvent(VirtualKeyCode.B);
 
             manager.RemoveEvent(VirtualKeyCode.LCONTROL, Callback);
 

@@ -187,7 +187,7 @@ namespace Yato.LowLevelInput
             return false;
         }
 
-        public bool WaitForKeyState(VirtualKeyCode key, KeyState state = KeyState.Down)
+        public bool WaitForKeyEvent(VirtualKeyCode key, KeyState state = KeyState.Down)
         {
             if (key == VirtualKeyCode.INVALID) return false;
             if (state == KeyState.None) return false;
