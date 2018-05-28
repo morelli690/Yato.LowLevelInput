@@ -11,27 +11,48 @@ namespace Yato.LowLevelInput
     {
         public static void Main(string[] args)
         {
-            LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
-            LowLevelMouseHook mouseHook = new LowLevelMouseHook();
+            InputManager manager = new InputManager();
 
-            kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent;
-            mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
+            manager.RegisterEvent(VirtualKeyCode.LCONTROL, Callback);
 
-            kbdHook.InstallHook();
-            mouseHook.InstallHook();
+            manager.WaitForKeyState(VirtualKeyCode.B);
 
-            Console.ReadLine();
+            manager.RemoveEvent(VirtualKeyCode.LCONTROL, Callback);
+
+            Console.WriteLine("B down");
+
+            while (true)
+            {
+                Console.WriteLine(manager.IsPressed(VirtualKeyCode.LCONTROL));
+            }
         }
 
-        private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
+        private static void Callback(KeyState state, VirtualKeyCode key)
         {
-            Console.WriteLine($"KeyState: {state}, Key: {key}, X: {x}, Y: {y}");
+            Console.WriteLine($"State: {state}, VK: {key}");
         }
 
-        private static void KbdHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
-        {
-            Console.WriteLine($"KeyState: {state}, Key: {key}");
-        }
+        //public static void Main(string[] args)
+        //{
+        //    LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
+        //    LowLevelMouseHook mouseHook = new LowLevelMouseHook();
+
+        // kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent; mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
+
+        // kbdHook.InstallHook(); mouseHook.InstallHook();
+
+        //    Console.ReadLine();
+        //}
+
+        //private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
+        //{
+        //    Console.WriteLine($"KeyState: {state}, Key: {key}, X: {x}, Y: {y}");
+        //}
+
+        //private static void KbdHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
+        //{
+        //    Console.WriteLine($"KeyState: {state}, Key: {key}");
+        //}
     }
 }
 
