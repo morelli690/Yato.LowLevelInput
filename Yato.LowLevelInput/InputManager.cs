@@ -142,15 +142,18 @@ namespace Yato.LowLevelInput
                 mapIsPressed[key] = state == KeyState.Down ? true : false;
             }
 
-            var currentKeyCallbackDict = singleKeyCallback;
-
-            if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
+            Global.StartNewTask(() =>
             {
-                if (currentKeyCallbackDict.ContainsKey(key))
+                var currentKeyCallbackDict = singleKeyCallback;
+
+                if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
                 {
-                    currentKeyCallbackDict[key].Invoke(state, key);
+                    if (currentKeyCallbackDict.ContainsKey(key))
+                    {
+                        currentKeyCallbackDict[key].Invoke(state, key);
+                    }
                 }
-            }
+            });
         }
 
         public bool IsPressed(VirtualKeyCode key)
@@ -187,7 +190,7 @@ namespace Yato.LowLevelInput
             return false;
         }
 
-        public bool WaitForKeyEvent(VirtualKeyCode key, KeyState state = KeyState.Down)
+        public bool WaitForKeyEvent(VirtualKeyCode key, KeyState state = KeyState.Down, int timeout = -1)
         {
             if (key == VirtualKeyCode.INVALID) return false;
             if (state == KeyState.None) return false;
@@ -209,13 +212,25 @@ namespace Yato.LowLevelInput
 
             if (!RegisterEvent(key, callback)) return false;
 
+            bool result = false;
+
             Monitor.Enter(threadLock);
-            Monitor.Wait(threadLock);
+
+            if (timeout < 0)
+            {
+                Monitor.Wait(threadLock);
+                result = true;
+            }
+            else
+            {
+                result = Monitor.Wait(threadLock, timeout);
+            }
+
             Monitor.Exit(threadLock);
 
             RemoveEvent(key, callback);
 
-            return true;
+            return result;
         }
 
         #region IDisposable Support
