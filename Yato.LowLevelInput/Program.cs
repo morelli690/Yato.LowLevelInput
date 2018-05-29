@@ -13,17 +13,15 @@ namespace Yato.LowLevelInput
         {
             InputManager manager = new InputManager();
 
-            manager.RegisterEvent(VirtualKeyCode.LCONTROL, Callback);
+            // cheat loop
 
-            manager.WaitForKeyEvent(VirtualKeyCode.B);
-
-            manager.RemoveEvent(VirtualKeyCode.LCONTROL, Callback);
-
-            Console.WriteLine("B down");
-
-            while (true)
+            while (true/*Aimbot*/)
             {
-                Console.WriteLine(manager.IsPressed(VirtualKeyCode.LCONTROL));
+                if (!manager.WaitForKeyEvent(VirtualKeyCode.LCONTROL, KeyState.Down, 1000)) continue;
+
+                while (manager.IsPressed(VirtualKeyCode.LCONTROL))
+                {
+                }
             }
         }
 
