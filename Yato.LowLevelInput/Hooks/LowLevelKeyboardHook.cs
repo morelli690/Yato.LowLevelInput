@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 using Yato.LowLevelInput.PInvoke;
 using Yato.LowLevelInput.WindowsHooks;
@@ -95,7 +96,7 @@ namespace Yato.LowLevelInput.Hooks
 
         private void InvokeEventListeners(KeyState state, VirtualKeyCode key)
         {
-            Global.StartNewTask(() =>
+            Task.Factory.StartNew(() =>
             {
                 OnKeyboardEvent?.Invoke(state, key);
             });

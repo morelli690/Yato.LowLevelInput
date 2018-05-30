@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Yato.LowLevelInput.Converters;
 using Yato.LowLevelInput.Hooks;
@@ -105,7 +106,7 @@ namespace Yato.LowLevelInput
         {
             if (OnMouseEvent != null)
             {
-                Global.StartNewTask(() =>
+                Task.Factory.StartNew(() =>
                 {
                     OnMouseEvent?.Invoke(state, key, x, y);
                 });
@@ -131,7 +132,7 @@ namespace Yato.LowLevelInput
         {
             if (OnKeyboardEvent != null)
             {
-                Global.StartNewTask(() =>
+                Task.Factory.StartNew(() =>
                 {
                     OnKeyboardEvent?.Invoke(state, key);
                 });
@@ -142,7 +143,7 @@ namespace Yato.LowLevelInput
                 mapIsPressed[key] = state == KeyState.Down ? true : false;
             }
 
-            Global.StartNewTask(() =>
+            Task.Factory.StartNew(() =>
             {
                 var currentKeyCallbackDict = singleKeyCallback;
 
