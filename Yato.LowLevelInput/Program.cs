@@ -13,46 +13,28 @@ namespace Yato.LowLevelInput
 
         public static void Main(string[] args)
         {
-            manager = new InputManager();
+            LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
+            LowLevelMouseHook mouseHook = new LowLevelMouseHook();
 
-            // cheat loop
+            kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent; mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
 
-            while (true/*Aimbot*/)
+            kbdHook.InstallHook(); mouseHook.InstallHook();
+
+            while (true)
             {
-                if (!manager.WaitForKeyEvent(VirtualKeyCode.LCONTROL, KeyState.Down, 1000)) continue;
-
-                while (manager.IsPressed(VirtualKeyCode.LCONTROL))
-                {
-                }
+                Thread.Sleep(1);
             }
         }
 
-        private static void Callback(KeyState state, VirtualKeyCode key)
+        private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
         {
-            Console.WriteLine($"State: {state}, VK: {key}");
+            Console.WriteLine($"KeyState: {state}, Key: {key}, X: {x}, Y: {y}");
         }
 
-        //public static void Main(string[] args)
-        //{
-        //    LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
-        //    LowLevelMouseHook mouseHook = new LowLevelMouseHook();
-
-        // kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent; mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
-
-        // kbdHook.InstallHook(); mouseHook.InstallHook();
-
-        //    Console.ReadLine();
-        //}
-
-        //private static void MouseHook_OnMouseEvent(KeyState state, VirtualKeyCode key, int x, int y)
-        //{
-        //    Console.WriteLine($"KeyState: {state}, Key: {key}, X: {x}, Y: {y}");
-        //}
-
-        //private static void KbdHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
-        //{
-        //    Console.WriteLine($"KeyState: {state}, Key: {key}");
-        //}
+        private static void KbdHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
+        {
+            Console.WriteLine($"KeyState: {state}, Key: {key}");
+        }
     }
 
     public static class Feature
