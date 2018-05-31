@@ -16,9 +16,11 @@ namespace Yato.LowLevelInput
             LowLevelKeyboardHook kbdHook = new LowLevelKeyboardHook();
             LowLevelMouseHook mouseHook = new LowLevelMouseHook();
 
-            kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent; mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
+            kbdHook.OnKeyboardEvent += KbdHook_OnKeyboardEvent;
+            mouseHook.OnMouseEvent += MouseHook_OnMouseEvent;
 
-            kbdHook.InstallHook(); mouseHook.InstallHook();
+            kbdHook.InstallHook();
+            mouseHook.InstallHook();
 
             while (true)
             {
