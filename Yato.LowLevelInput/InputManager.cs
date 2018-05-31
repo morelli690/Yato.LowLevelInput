@@ -159,8 +159,6 @@ namespace Yato.LowLevelInput
 
         public bool IsPressed(VirtualKeyCode key)
         {
-            if (!mapIsPressed.ContainsKey(key)) return false;
-
             return mapIsPressed[key];
         }
 
