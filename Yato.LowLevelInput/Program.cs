@@ -36,45 +36,6 @@ namespace Yato.LowLevelInput
             Console.WriteLine($"KeyState: {state}, Key: {key}");
         }
     }
-
-    public static class Feature
-    {
-        private static object lockObject = new object();
-        private static bool execute = true;
-
-        public static void Callback(KeyState state, VirtualKeyCode key)
-        {
-            if (state != KeyState.Down) return;
-
-            if (!AcquireLock()) return;
-
-            while (Program.manager.IsPressed(key))
-            {
-            }
-
-            ReleaseLock();
-        }
-
-        private static bool AcquireLock()
-        {
-            lock (lockObject)
-            {
-                if (!execute) return false;
-
-                execute = false;
-
-                return true;
-            }
-        }
-
-        private static void ReleaseLock()
-        {
-            lock (lockObject)
-            {
-                execute = true;
-            }
-        }
-    }
 }
 
 #endif
