@@ -59,7 +59,6 @@
     <Compile Include="WindowsHooks\WindowsHook.cs" />
     <Compile Include="Hooks\KeyState.cs" />
     <Compile Include="Library.cs" />
-    <Compile Include="ObfuscationSettings.cs" />
     <Compile Include="PInvoke\Kernel32.cs" />
     <Compile Include="PInvoke\User32.cs" />
     <Compile Include="PInvoke\WinApi.cs" />
