@@ -5,6 +5,9 @@ Yato.LowLevelInput offers a safe implementation of the windows hooking api.
 
 You can easily monitor mouse and keyboard events and register callbacks for specific keys.
 
+### NuGet
+
+    Install-Package Yato.LowLevelInput
 
 ### Features
 
@@ -16,10 +19,6 @@ You can easily monitor mouse and keyboard events and register callbacks for spec
 - Can remove the Injected flag from any input
 - Complete VirtualKeyCodes enum
 - Obfuscator freindly
-
-### NuGet
-
-    Install-Package Yato.LowLevelInput
 
 ### Contribute
 
