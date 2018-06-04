@@ -7,7 +7,10 @@ using Yato.LowLevelInput.PInvoke;
 
 namespace Yato.LowLevelInput.WindowsHooks
 {
-    internal class WindowsHook : IDisposable
+    /// <summary>
+    /// </summary>
+    /// <seealso cref="System.IDisposable"/>
+    public class WindowsHook : IDisposable
     {
         private static IntPtr MainModuleHandle = Process.GetCurrentProcess().MainModule.BaseAddress;
 
@@ -22,21 +25,39 @@ namespace Yato.LowLevelInput.WindowsHooks
             lockObject = new object();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowsHook"/> class.
+        /// </summary>
+        /// <param name="windowsHookType">Type of the windows hook.</param>
         public WindowsHook(WindowsHookType windowsHookType)
         {
             lockObject = new object();
             WindowsHookType = windowsHookType;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="WindowsHook"/> class.
+        /// </summary>
         ~WindowsHook()
         {
             Dispose(false);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="wParam">The w parameter.</param>
+        /// <param name="lParam">The l parameter.</param>
         public delegate void HookCallback(IntPtr wParam, IntPtr lParam);
 
+        /// <summary>
+        /// Occurs when [on hook called].
+        /// </summary>
         public event HookCallback OnHookCalled;
 
+        /// <summary>
+        /// Gets the type of the windows hook.
+        /// </summary>
+        /// <value>The type of the windows hook.</value>
         public WindowsHookType WindowsHookType { get; private set; }
 
         private IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam)
@@ -72,6 +93,10 @@ namespace Yato.LowLevelInput.WindowsHooks
             User32.UnhookWindowsHookEx(hookHandle);
         }
 
+        /// <summary>
+        /// Installs the hook.
+        /// </summary>
+        /// <returns></returns>
         public bool InstallHook()
         {
             lock (lockObject)
@@ -90,6 +115,10 @@ namespace Yato.LowLevelInput.WindowsHooks
             }
         }
 
+        /// <summary>
+        /// Uninstalls the hook.
+        /// </summary>
+        /// <returns></returns>
         public bool UninstallHook()
         {
             lock (lockObject)
@@ -120,6 +149,13 @@ namespace Yato.LowLevelInput.WindowsHooks
 
         private bool disposedValue = false;
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        /// unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -135,6 +171,10 @@ namespace Yato.LowLevelInput.WindowsHooks
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting
+        /// unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);

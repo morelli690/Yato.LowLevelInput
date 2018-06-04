@@ -13,12 +13,22 @@ namespace Yato.LowLevelInput
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
+        /// <summary>
+        /// </summary>
         public delegate void ProcessExitCallback();
 
+        /// <summary>
+        /// </summary>
         public delegate void UnhandledExceptionCallback();
 
+        /// <summary>
+        /// Occurs when [on process exit].
+        /// </summary>
         public static event ProcessExitCallback OnProcessExit;
 
+        /// <summary>
+        /// Occurs when [on unhandled exception].
+        /// </summary>
         public static event UnhandledExceptionCallback OnUnhandledException;
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)

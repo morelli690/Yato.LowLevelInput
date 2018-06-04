@@ -4,6 +4,8 @@ using Yato.LowLevelInput.Hooks;
 
 namespace Yato.LowLevelInput.Converters
 {
+    /// <summary>
+    /// </summary>
     public static class KeyStateConverter
     {
         private static string[] keyStateMap = new string[]
@@ -13,6 +15,11 @@ namespace Yato.LowLevelInput.Converters
             "Down"
         };
 
+        /// <summary>
+        /// To the state of the key.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static KeyState ToKeyState(string name)
         {
             if (string.IsNullOrEmpty(name)) return KeyState.None;
@@ -28,6 +35,11 @@ namespace Yato.LowLevelInput.Converters
             return KeyState.None;
         }
 
+        /// <summary>
+        /// To the state of the key.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <returns></returns>
         public static KeyState ToKeyState(int state)
         {
             if (state < 0) return KeyState.None;
@@ -36,6 +48,11 @@ namespace Yato.LowLevelInput.Converters
             return (KeyState)state;
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
         public static string ToString(KeyState state)
         {
             int index = (int)state;
@@ -46,6 +63,11 @@ namespace Yato.LowLevelInput.Converters
             return keyStateMap[index];
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
         public static string ToString(int index)
         {
             if (index < 0) return "None";

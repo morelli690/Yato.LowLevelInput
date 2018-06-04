@@ -5,6 +5,8 @@ using Yato.LowLevelInput.Hooks;
 
 namespace Yato.LowLevelInput.Converters
 {
+    /// <summary>
+    /// </summary>
     public static class KeyCodeConverter
     {
         private static string[] keyCodeMap = new string[]
@@ -266,6 +268,10 @@ namespace Yato.LowLevelInput.Converters
             "OEM_CLEAR",
         };
 
+        /// <summary>
+        /// Enumerates the virtual key codes.
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<KeyValuePair<VirtualKeyCode, string>> EnumerateVirtualKeyCodes()
         {
             for (int i = 0; i < keyCodeMap.Length; i++)
@@ -277,6 +283,11 @@ namespace Yato.LowLevelInput.Converters
             }
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
         public static string ToString(VirtualKeyCode code)
         {
             int index = (int)code;
@@ -287,6 +298,11 @@ namespace Yato.LowLevelInput.Converters
             return keyCodeMap[index];
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
         public static string ToString(int index)
         {
             if (index < 0) return string.Empty;
@@ -295,6 +311,11 @@ namespace Yato.LowLevelInput.Converters
             return keyCodeMap[index];
         }
 
+        /// <summary>
+        /// To the virtual key code.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static VirtualKeyCode ToVirtualKeyCode(string name)
         {
             if (string.IsNullOrEmpty(name)) return VirtualKeyCode.INVALID;
@@ -310,6 +331,11 @@ namespace Yato.LowLevelInput.Converters
             return VirtualKeyCode.INVALID;
         }
 
+        /// <summary>
+        /// To the virtual key code.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns></returns>
         public static VirtualKeyCode ToVirtualKeyCode(int code)
         {
             if (code < 0) return VirtualKeyCode.INVALID;

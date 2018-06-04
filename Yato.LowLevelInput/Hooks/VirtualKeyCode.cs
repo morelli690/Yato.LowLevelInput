@@ -2,10 +2,18 @@
 
 namespace Yato.LowLevelInput.Hooks
 {
+    /// <summary>
+    /// </summary>
     public enum VirtualKeyCode : int
     {
+        /// <summary>
+        /// The invalid
+        /// </summary>
         INVALID = -1,
 
+        /// <summary>
+        /// The hotkey
+        /// </summary>
         HOTKEY = 0x0,
 
         ///<summary>

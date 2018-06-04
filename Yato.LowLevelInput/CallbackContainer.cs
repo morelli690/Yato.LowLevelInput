@@ -11,11 +11,18 @@ namespace Yato.LowLevelInput
 
         private event InputManager.KeyStateChangedCallback OnCallbackEvent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CallbackContainer"/> class.
+        /// </summary>
         public CallbackContainer()
         {
             lockObject = new object();
         }
 
+        /// <summary>
+        /// Adds the specified callback.
+        /// </summary>
+        /// <param name="callback">The callback.</param>
         public void Add(InputManager.KeyStateChangedCallback callback)
         {
             lock (lockObject)
@@ -30,6 +37,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Removes the specified callback.
+        /// </summary>
+        /// <param name="callback">The callback.</param>
         public void Remove(InputManager.KeyStateChangedCallback callback)
         {
             lock (lockObject)
@@ -44,6 +55,11 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Invokes the specified state.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <param name="keyCode">The key code.</param>
         public void Invoke(KeyState state, VirtualKeyCode keyCode)
         {
             OnCallbackEvent?.Invoke(state, keyCode);

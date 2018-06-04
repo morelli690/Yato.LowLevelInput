@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Yato.LowLevelInput.PInvoke
 {
-    public enum WindowsMessage : uint
+    internal enum WindowsMessage : uint
     {
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,
@@ -268,7 +268,7 @@ namespace Yato.LowLevelInput.PInvoke
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Message
+    internal struct Message
     {
         public IntPtr Hwnd;
         public IntPtr lParam;

@@ -3,8 +3,14 @@ using System.Reflection;
 
 namespace Yato.LowLevelInput
 {
+    /// <summary>
+    /// </summary>
     public static class Library
     {
+        /// <summary>
+        /// Gets the author.
+        /// </summary>
+        /// <value>The author.</value>
         public static string Author
         {
             get
@@ -13,6 +19,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public static string Name
         {
             get
@@ -21,6 +31,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Gets the URL.
+        /// </summary>
+        /// <value>The URL.</value>
         public static string URL
         {
             get
@@ -29,6 +43,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Gets the version.
+        /// </summary>
+        /// <value>The version.</value>
         public static string Version
         {
             get

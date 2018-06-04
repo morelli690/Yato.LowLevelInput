@@ -8,6 +8,9 @@ using Yato.LowLevelInput.Hooks;
 
 namespace Yato.LowLevelInput
 {
+    /// <summary>
+    /// </summary>
+    /// <seealso cref="System.IDisposable"/>
     public class InputManager : IDisposable
     {
         private object lockObject;
@@ -19,12 +22,26 @@ namespace Yato.LowLevelInput
 
         private Dictionary<VirtualKeyCode, CallbackContainer> singleKeyCallback;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="state">The state.</param>
+        /// <param name="keyCode">The key code.</param>
         public delegate void KeyStateChangedCallback(KeyState state, VirtualKeyCode keyCode);
 
+        /// <summary>
+        /// Occurs when [on keyboard event].
+        /// </summary>
         public event LowLevelKeyboardHook.KeyboardEventCallback OnKeyboardEvent;
 
+        /// <summary>
+        /// Occurs when [on mouse event].
+        /// </summary>
         public event LowLevelMouseHook.MouseEventCallback OnMouseEvent;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [capture mouse move].
+        /// </summary>
+        /// <value><c>true</c> if [capture mouse move]; otherwise, <c>false</c>.</value>
         public bool CaptureMouseMove
         {
             get
@@ -41,6 +58,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [clear injected flag].
+        /// </summary>
+        /// <value><c>true</c> if [clear injected flag]; otherwise, <c>false</c>.</value>
         public bool ClearInjectedFlag
         {
             get
@@ -57,21 +78,36 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputManager"/> class.
+        /// </summary>
         public InputManager()
         {
             Initialize(false, false);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputManager"/> class.
+        /// </summary>
+        /// <param name="captureMouseMove">if set to <c>true</c> [capture mouse move].</param>
         public InputManager(bool captureMouseMove)
         {
             Initialize(captureMouseMove, false);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputManager"/> class.
+        /// </summary>
+        /// <param name="captureMouseMove">if set to <c>true</c> [capture mouse move].</param>
+        /// <param name="clearInjectedFlag">if set to <c>true</c> [clear injected flag].</param>
         public InputManager(bool captureMouseMove, bool clearInjectedFlag)
         {
             Initialize(captureMouseMove, clearInjectedFlag);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="InputManager"/> class.
+        /// </summary>
         ~InputManager()
         {
             Dispose(false);
@@ -157,11 +193,22 @@ namespace Yato.LowLevelInput
             });
         }
 
+        /// <summary>
+        /// Determines whether the specified key is pressed.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns><c>true</c> if the specified key is pressed; otherwise, <c>false</c>.</returns>
         public bool IsPressed(VirtualKeyCode key)
         {
             return mapIsPressed[key];
         }
 
+        /// <summary>
+        /// Registers the event.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="callback">The callback.</param>
+        /// <returns></returns>
         public bool RegisterEvent(VirtualKeyCode key, KeyStateChangedCallback callback)
         {
             if (key == VirtualKeyCode.INVALID) return false;
@@ -177,6 +224,12 @@ namespace Yato.LowLevelInput
             return true;
         }
 
+        /// <summary>
+        /// Removes the event.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="callback">The callback.</param>
+        /// <returns></returns>
         public bool RemoveEvent(VirtualKeyCode key, KeyStateChangedCallback callback)
         {
             if (key == VirtualKeyCode.INVALID) return false;
@@ -189,6 +242,13 @@ namespace Yato.LowLevelInput
             return false;
         }
 
+        /// <summary>
+        /// Waits for key event.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
         public bool WaitForKeyEvent(VirtualKeyCode key, KeyState state = KeyState.Down, int timeout = -1)
         {
             if (key == VirtualKeyCode.INVALID) return false;
@@ -234,8 +294,18 @@ namespace Yato.LowLevelInput
 
         #region IDisposable Support
 
+        /// <summary>
+        /// The disposed value
+        /// </summary>
         private bool disposedValue = false;
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        /// unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -253,6 +323,10 @@ namespace Yato.LowLevelInput
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting
+        /// unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
