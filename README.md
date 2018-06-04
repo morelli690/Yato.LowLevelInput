@@ -17,6 +17,10 @@ You can easily monitor mouse and keyboard events and register callbacks for spec
 - Complete VirtualKeyCodes enum
 - Obfuscator freindly
 
+### NuGet
+
+    Install-Package Yato.LowLevelInput
+
 ### Contribute
 
 Help me to provide a better xml documentation or suggest features and rport bugs
