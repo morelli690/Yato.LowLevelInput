@@ -175,6 +175,12 @@ namespace Yato.LowLevelInput.Hooks
                     InvokeEventListeners(KeyState.Down, VirtualKeyCode.MBUTTON, x, y);
                     break;
 
+                case WindowsMessage.WM_MBUTTONUP:
+                case WindowsMessage.WM_NCMBUTTONUP:
+                    IsMiddleMouseButtonPressed = false;
+                    InvokeEventListeners(KeyState.Up, VirtualKeyCode.MBUTTON, x, y);
+                    break;
+
                 case WindowsMessage.WM_MBUTTONDBLCLK:
                 case WindowsMessage.WM_NCMBUTTONDBLCLK:
                     IsMiddleMouseButtonPressed = true;
