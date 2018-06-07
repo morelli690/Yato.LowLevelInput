@@ -18,7 +18,7 @@ namespace Yato.LowLevelInput
         private LowLevelKeyboardHook keyboardHook;
         private LowLevelMouseHook mouseHook;
 
-        private Dictionary<VirtualKeyCode, bool> mapIsPressed;
+        private Dictionary<VirtualKeyCode, KeyState> mapKeyState;
 
         private Dictionary<VirtualKeyCode, CallbackContainer> singleKeyCallback;
 
@@ -118,11 +118,11 @@ namespace Yato.LowLevelInput
             // initialize vars
             lockObject = new object();
 
-            mapIsPressed = new Dictionary<VirtualKeyCode, bool>();
+            mapKeyState = new Dictionary<VirtualKeyCode, KeyState>();
 
             foreach (var pair in KeyCodeConverter.EnumerateVirtualKeyCodes())
             {
-                mapIsPressed.Add(pair.Key, false);
+                mapKeyState.Add(pair.Key, KeyState.None);
             }
 
             singleKeyCallback = new Dictionary<VirtualKeyCode, CallbackContainer>();
@@ -148,9 +148,11 @@ namespace Yato.LowLevelInput
                 });
             }
 
-            if (mapIsPressed.ContainsKey(key))
+            if (mapKeyState.ContainsKey(key))
             {
-                mapIsPressed[key] = state == KeyState.Down ? true : false;
+                mapKeyState[key] = state == KeyState.Up && mapKeyState[key] == KeyState.Down
+                    ? KeyState.Pressed
+                    : state;
             }
 
             var currentKeyCallbackDict = singleKeyCallback;
@@ -174,9 +176,11 @@ namespace Yato.LowLevelInput
                 });
             }
 
-            if (mapIsPressed.ContainsKey(key))
+            if (mapKeyState.ContainsKey(key))
             {
-                mapIsPressed[key] = state == KeyState.Down ? true : false;
+                mapKeyState[key] = state == KeyState.Up && mapKeyState[key] == KeyState.Down
+                    ? KeyState.Pressed
+                    : state;
             }
 
             Task.Factory.StartNew(() =>
@@ -200,7 +204,32 @@ namespace Yato.LowLevelInput
         /// <returns><c>true</c> if the specified key is pressed; otherwise, <c>false</c>.</returns>
         public bool IsPressed(VirtualKeyCode key)
         {
-            return mapIsPressed[key];
+            return this.GetState(key) == KeyState.Down;
+        }
+
+        /// <summary>
+        /// Determines whether the specified key was pressed.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns><c>true</c> if the specified key was pressed; otherwise, <c>false</c>.</returns>
+        public bool WasPressed(VirtualKeyCode key)
+        {
+            if (this.GetState(key) != KeyState.Pressed)
+                return false;
+
+            mapKeyState[key] = KeyState.Up;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns the current state of a key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns><c>KeyState</c>.</returns>
+        public KeyState GetState(VirtualKeyCode key)
+        {
+            return mapKeyState[key];
         }
 
         /// <summary>
@@ -315,7 +344,7 @@ namespace Yato.LowLevelInput
                     if (keyboardHook != null) keyboardHook.Dispose();
                     if (mouseHook != null) mouseHook.Dispose();
 
-                    mapIsPressed = null;
+                    mapKeyState = null;
                     singleKeyCallback = null;
                 }
 

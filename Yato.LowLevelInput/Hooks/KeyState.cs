@@ -19,6 +19,11 @@ namespace Yato.LowLevelInput.Hooks
         /// <summary>
         /// Down
         /// </summary>
-        Down
+        Down,
+
+        /// <summary>
+        /// Pressed
+        /// </summary>
+        Pressed
     }
 }
