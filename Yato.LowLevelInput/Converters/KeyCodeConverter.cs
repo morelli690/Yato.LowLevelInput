@@ -10,7 +10,7 @@ namespace Yato.LowLevelInput.Converters
     public static class KeyCodeConverter
     {
         private static string[] keyCodeMap = new string[]
-                {
+        {
             "HOTKEY",
             "LBUTTON",
             "RBUTTON",
