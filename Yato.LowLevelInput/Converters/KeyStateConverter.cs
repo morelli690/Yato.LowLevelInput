@@ -12,7 +12,8 @@ namespace Yato.LowLevelInput.Converters
         {
             "None",
             "Up",
-            "Down"
+            "Down",
+            "Pressed"
         };
 
         /// <summary>
