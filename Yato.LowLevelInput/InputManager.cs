@@ -20,7 +20,7 @@ namespace Yato.LowLevelInput
 
         private Dictionary<VirtualKeyCode, KeyState> mapKeyState;
 
-        private Dictionary<VirtualKeyCode, CallbackContainer> singleKeyCallback;
+        private Dictionary<VirtualKeyCode, List<KeyStateChangedCallback>> singleKeyCallback;
 
         /// <summary>
         /// </summary>
@@ -125,7 +125,7 @@ namespace Yato.LowLevelInput
                 mapKeyState.Add(pair.Key, KeyState.None);
             }
 
-            singleKeyCallback = new Dictionary<VirtualKeyCode, CallbackContainer>();
+            singleKeyCallback = new Dictionary<VirtualKeyCode, List<KeyStateChangedCallback>>();
 
             // initialize hooks
             keyboardHook = new LowLevelKeyboardHook(clearInjectedFlag);
@@ -155,15 +155,23 @@ namespace Yato.LowLevelInput
                     : state;
             }
 
-            var currentKeyCallbackDict = singleKeyCallback;
-
-            if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
+            Task.Factory.StartNew(() =>
             {
-                if (currentKeyCallbackDict.ContainsKey(key))
+                var currentKeyCallbackDict = singleKeyCallback; // create a temp var to avoid locking
+
+                if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
                 {
-                    currentKeyCallbackDict[key].Invoke(state, key);
+                    if (currentKeyCallbackDict.ContainsKey(key))
+                    {
+                        var currentList = currentKeyCallbackDict[key];
+
+                        foreach (var callback in currentList)
+                        {
+                            callback(state, key);
+                        }
+                    }
                 }
-            }
+            });
         }
 
         private void KeyboardHook_OnKeyboardEvent(KeyState state, VirtualKeyCode key)
@@ -185,13 +193,18 @@ namespace Yato.LowLevelInput
 
             Task.Factory.StartNew(() =>
             {
-                var currentKeyCallbackDict = singleKeyCallback;
+                var currentKeyCallbackDict = singleKeyCallback; // create a temp var to avoid locking
 
                 if (currentKeyCallbackDict != null && currentKeyCallbackDict.Count != 0)
                 {
                     if (currentKeyCallbackDict.ContainsKey(key))
                     {
-                        currentKeyCallbackDict[key].Invoke(state, key);
+                        var currentList = currentKeyCallbackDict[key];
+
+                        foreach (var callback in currentList)
+                        {
+                            callback(state, key);
+                        }
                     }
                 }
             });
@@ -245,7 +258,10 @@ namespace Yato.LowLevelInput
 
             lock (lockObject)
             {
-                if (!singleKeyCallback.ContainsKey(key)) singleKeyCallback.Add(key, new CallbackContainer());
+                if (!singleKeyCallback.ContainsKey(key))
+                {
+                    singleKeyCallback.Add(key, new List<KeyStateChangedCallback>());
+                }
             }
 
             singleKeyCallback[key].Add(callback);
